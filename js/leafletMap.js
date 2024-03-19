@@ -79,16 +79,14 @@ class LeafletMap {
                           d3.select('#tooltip')
                               .style('opacity', 1)
                               .style('z-index', 1000000)
-                              .html(`<div class="tooltip-content">
-                                      <div><strong>Date/Time:</strong> ${d.date_time}</div>
-                                      <div><strong>City/Area:</strong> ${d.city_area}</div>
-                                      <div><strong>State:</strong> ${d.state}</div>
-                                      <div><strong>Country:</strong> ${d.country}</div>
-                                      <div><strong>UFO Shape:</strong> ${d.ufo_shape}</div>
-                                      <div><strong>Encounter Length:</strong> ${d.encounter_length} (${d.described_encounter_length})</div>
-                                      <div><strong>Description:</strong> ${d.description}</div>
-                                      <div><strong>Date Documented:</strong> ${d.date_documented}</div>
-                                     </div>`);
+                              .html(`<div class="tooltip-content"> 
+                              Location: ${d.city_area}${d.state !== 'NA' ?', ' + d.state : ''}
+                              <br>Date/Time: ${d.date_time}
+                              <br>At latitude: ${d.latitude}, longitude: ${d.longitude}
+                              <br>Shape: ${d.ufo_shape}
+                              <br>Encounter time length: ${d.described_encounter_length} (${d.encounter_length} seconds)
+                              <br>Description: ${d.description}
+                              <br></div>`);
                       })
                       .on('mousemove', (event) => {
                           // Position the tooltip
