@@ -37,19 +37,47 @@ class LeafletMap {
 
     //Stamen Terrain
     vis.stUrl =
-      "https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}";
-    vis.stAttr =
-      'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-
-    vis.terrianURL =
       "https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.{ext}";
-    vis.terrianAttr =
+    vis.stAttr =
       '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
-    //this is the base map layer, where we are showing the map background
-    vis.base_layer = L.tileLayer(vis.terrianURL, {
+    // Open street map
+    vis.openStreetMapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+    vis.openStreetMapAttr = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+    // Esri Ocean Base
+    vis.esriOceanBaseUrl = 
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}';
+    vis.esriOceanBaseAttr = 
+      'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri';
+
+    const dropdownOptions = [
+      { value: "esri", label: "ESRI" },
+      { value: "openStreetMap", label: "Open Street Map" },
+      { value: "topo", label: "Topo" },
+      { value: "esriOceanBase", label: "ESRI Ocean Base"},
+      { value: "stamenTerrain", label: "Stamen Terrain" }
+    ];
+  
+    // Dropdown for map backgrounds
+    d3.select(vis.config.parentElement)
+      .append("select")
+      .attr("id", "map-background")
+      .selectAll("option")
+      .data(dropdownOptions)
+      .enter()
+      .append("option")
+      .attr("value", d => d.value)
+      .text(d => d.label);
+  
+    d3.select("#map-background").on("change", function() {
+      vis.changeMapBackground(this.value);
+    });
+
+
+    vis.base_layer = L.tileLayer(vis.esriUrl, {
       id: "terrian-image",
-      attribution: vis.terrianAttr,
+      attribution: vis.esriAttr,
       ext: "png",
     });
 
@@ -138,6 +166,55 @@ class LeafletMap {
     });
   }
 
+  changeMapBackground(background) {
+    let vis = this;
+    // This removes the existing base layer
+    vis.theMap.removeLayer(vis.base_layer);
+
+    switch (background) {
+        case "openStreetMap":
+            vis.base_layer = L.tileLayer(vis.openStreetMapUrl, {
+                id: "open-street-image",
+                attribution: vis.openStreetMapAttr,
+                ext: "png",
+            });
+            break;
+        case "esri":
+            vis.base_layer = L.tileLayer(vis.esriUrl, {
+                id: "esri-image",
+                attribution: vis.esriAttr,
+                ext: "png",
+            });
+            break;
+        case "topo":
+            vis.base_layer = L.tileLayer(vis.topoUrl, {
+                id: "topo-image",
+                attribution: vis.topoAttr,
+                ext: "png",
+            });
+            break;
+        case "esriOceanBase":
+          vis.base_layer = L.tileLayer(vis.esriOceanBaseUrl, {
+              id: "esri-ocean-base-image",
+              attribution: vis.esriOceanBaseAttr,
+              ext: "png",
+          });
+              break;
+        case "stamenTerrain":
+            vis.base_layer = L.tileLayer(vis.stUrl, {
+                id: "terrian-image",
+                attribution: vis.stAttr,
+                ext: "png",
+            });
+            break;
+        default:
+            console.error("Map background error");
+            return; 
+    }
+    vis.base_layer.addTo(vis.theMap);
+}
+
+  
   updateVis() {
     let vis = this;
 
