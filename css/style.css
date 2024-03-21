@@ -16,6 +16,11 @@ body {
     z-index: 10000000; 
     right: 0;
 }
+#color-by-option {
+  position: absolute; 
+  z-index: 10000000; 
+  left: 0;
+}
 .count {
   position: absolute;
   top: -25px; 
