@@ -8,11 +8,23 @@ class Barchart {
         margin: { top: 20, bottom: 50, right: 30, left: 50 },
       };
       this.attributeName = "encounter_length";
-      this.lengthGroup = ["<5", "5-15",  "15-30" , "30-60",
-       "60-120", "120-180", "180-240", "240-300", "300-360",
-       "360-420", "420-600", "600-780","780-1.2K" ,
-       "1.2K-1.5K", "1.5K-3K","3K-6K", "6K-12K", 
-       "12K-30K", "30K+"];
+      // this.lengthGroup = ["<5", "5-15",  "15-30" , "30-60",
+      //  "60-120", "120-180", "180-240", "240-300", "300-360",
+      //  "360-420", "420-600", "600-780","780-1.2K" ,
+      //  "1.2K-1.5K", "1.5K-3K","3K-6K", "6K-12K", 
+      //  "12K-30K", "30K+"];
+
+      //  this.lengthGroup = ["<5", "5-14",  "15-29" , "30-59",
+      //  "60-119", "120-179", "180-239", "240-299", "300-359",
+      //  "360-419", "420-599", "600-779","780-1199" ,
+      //  "1.2K-1499", "1.5K-2999","3K-5999", "6K-11999", 
+      //  "12K-29999", "30K+"];
+
+       this.lengthGroup = ["<5", "5-14",  "15-29" , "30-59",
+       "60-119", "120-179", "180-239", "240-299", "300-359",
+       "360-419", "420-599", "600-779","780-1199" ,
+       "1200-1499", "1500-2999","3000-5999", "6000-11999", 
+       "12000-29999", "30000+"];
   
       this.initVis();
     }
@@ -47,9 +59,10 @@ class Barchart {
         .range([0, vis.config.containerWidth]);
       vis.xAxis = vis.svg
         .append("g")
+        .attr("class", "x-axis")
         .attr("transform", `translate(0,${vis.config.containerHeight})`)
         .call(d3.axisBottom(vis.x));
-  
+
       vis.y = d3.scaleLinear().range([vis.config.containerHeight, 0]);
       vis.yAxis = vis.svg.append("g");
   
@@ -65,30 +78,31 @@ class Barchart {
             (vis.config.containerHeight + 35) +
             ")"
         )
+        .attr("y", 12)
         .style("text-anchor", "middle")
         .text('Encounter Length (seconds)');
-  
+        
       // Y axis label
       vis.svg
         .append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 0 - vis.config.margin.left)
+        .attr("y", 0 - vis.config.margin.left - 3)
         .attr("x", 0 - vis.config.containerHeight / 2)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text("Number of Sightings");
   
-    //   vis.brushG = vis.svg.append("g").attr("class", "brush");
+      vis.brushG = vis.svg.append("g").attr("class", "brush");
   
-    //   vis.brush = d3
-    //     .brushX()
-    //     .extent([
-    //       [0, 0],
-    //       [vis.config.containerWidth, vis.config.containerHeight],
-    //     ])
-    //     // Reset the filtered counties
-    //     .on("start", () => (filteredCounties = []))
-    //     .on("end", (result) => vis.filterBySelection(result, vis));
+      vis.brush = d3
+        .brushX()
+        .extent([
+          [0, 0],
+          [vis.config.containerWidth, vis.config.containerHeight],
+        ])
+        // Reset the filtered counties
+        .on("start", () => (filteredSightings = []))
+        .on("end", (result) => vis.filterBySelection(result, vis));
   
       this.updateVis();
     }
@@ -96,11 +110,17 @@ class Barchart {
     updateVis() {
       const vis = this;
   
-      vis.data = allData;
-
+    // Otherwise, include everything in allData
+    vis.data = allData.filter(
+      (d) =>
+        filteredSightings.length == 0 ||
+        (filteredSightings.length != 0 &&
+          filteredSightings.find(
+            (filteredSighting) => filteredSighting == d.id
+          ))
+    );
       const encounterLengths = vis.data.map(d => d.encounter_length);
 
-  
       // Count the number of counties of each type
       let statusCounts = new Array(this.lengthGroup.length).fill(0);
 
@@ -160,83 +180,79 @@ class Barchart {
         .attr("width", vis.x.bandwidth())
         .attr("height", (d) => vis.config.containerHeight - vis.y(d))
         .style("fill", "steelblue");
+
+      vis.svg.selectAll(".x-axis text")
+        .style("text-anchor", "end") 
+        .attr("transform", "rotate(-33)") 
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em");
+
   
       // The following code was modified from https://observablehq.com/@giorgiofighera/histogram-with-tooltips-and-bars-highlighted-on-mouse-over
-    //   d3.selectAll("rect.barchart-bar")
-    //     .on("mouseover", function (event, d) {
-    //       const mouseLoc = d3.pointer(event)[0];
-    //       const bandwidth = vis.x.bandwidth();
-    //       const hoveredStatus = vis.lengthGroup.find((type) => {
-    //         const barStart = vis.x(type);
-    //         const barEnd = barStart + bandwidth;
-    //         return barEnd >= mouseLoc && barStart <= mouseLoc;
-    //       });
-    //       d3.select(this).attr("stroke-width", "2").attr("stroke", "white");
-    //       tooltip.style("visibility", "visible").html(`
-    //           <div class="tooltip-title">${d} ${d === 1 ? "County" : "Counties"}</div>
-    //           <div><b>Status</b>: ${hoveredStatus}</div>
-    //           `);
-    //     })
-    //     .on("mousemove", function (event) {
-    //       tooltip
-    //         .style("top", event.pageY - 10 + "px")
-    //         .style("left", event.pageX + 10 + "px");
-    //     })
-    //     .on("mouseout", function () {
-    //       d3.select(this).attr("stroke-width", "0");
-    //       tooltip.style("visibility", "hidden");
-    //     })
-    //     .on("mousedown", function (event) {
-    //       vis.svg
-    //         .select(".overlay")
-    //         .node()
-    //         .dispatchEvent(
-    //           new MouseEvent("mousedown", {
-    //             bubbles: true,
-    //             clientX: event.clientX,
-    //             clientY: event.clientY,
-    //             pageX: event.pageX,
-    //             pageY: event.pageY,
-    //             view: window,
-    //             layerX: event.layerX,
-    //             layerY: event.layerY,
-    //             cancelable: true,
-    //           })
-    //         );
-    //     });
+      d3.selectAll("rect.barchart-bar")
+        .on("mouseover", function (event, d) {
+          const mouseLoc = d3.pointer(event)[0];
+          const bandwidth = vis.x.bandwidth();
+          const hoveredStatus = vis.lengthGroup.find((type) => {
+            const barStart = vis.x(type);
+            const barEnd = barStart + bandwidth;
+            return barEnd >= mouseLoc && barStart <= mouseLoc;
+          });
+          d3.select(this).attr("stroke-width", "2").attr("stroke", "white");
+          tooltip.style("visibility", "visible").html(`
+              <div class="tooltip-title">${d} ${d === 1 ? "County" : "Counties"}</div>
+              <div><b>Status</b>: ${hoveredStatus}</div>
+              `);
+        })
+        .on("mousemove", function (event) {
+          tooltip
+            .style("top", event.pageY - 10 + "px")
+            .style("left", event.pageX + 10 + "px");
+        })
+        .on("mouseout", function () {
+          d3.select(this).attr("stroke-width", "0");
+          tooltip.style("visibility", "hidden");
+        })
+        .on("mousedown", function (event) {
+          vis.svg
+            .select(".overlay")
+            .node()
+            .dispatchEvent(
+              new MouseEvent("mousedown", {
+                bubbles: true,
+                clientX: event.clientX,
+                clientY: event.clientY,
+                pageX: event.pageX,
+                pageY: event.pageY,
+                view: window,
+                layerX: event.layerX,
+                layerY: event.layerY,
+                cancelable: true,
+              })
+            );
+        });
   
-    //   vis.brushG.call(vis.brush);
+      vis.brushG.call(vis.brush);
     }
   
-    // filterBySelection(result, vis) {
-    //   if (!result.sourceEvent) return; // Only transition after input
+    filterBySelection(result, vis) {
+      if (!result.sourceEvent) return; // Only transition after input
   
-    //   const extent = result.selection;
+      const extent = result.selection;
   
-    //   if (!extent) {
-    //     // Reset the counties filter (include them all)
-    //     filteredCounties = [];
-    //   } else {
-    //     const brushStart = extent[0];
-    //     const brushEnd = extent[1];
-    //     const bandwidth = vis.x.bandwidth();
-    //     const filteredStatuses = [];
-    //     vis.statusTypes.forEach((type) => {
-    //       const barStart = vis.x(type);
-    //       const barEnd = barStart + bandwidth;
+      if (!extent) {
+        // Reset the filter (include them all)
+        filteredSightings = [];
+      } else {
+        // Filter the sightings
+        const range = [vis.x.invert(extent[0]), vis.x.invert(extent[1])];
   
-    //       if (barEnd >= brushStart && barStart <= brushEnd)
-    //         filteredStatuses.push(type);
-    //     });
-  
-    //     // Filter the counties
-    //     filteredCounties = countiesData
-    //       .filter((d) => filteredStatuses.includes(d[vis.attributeName]))
-    //       .map((d) => d.cnty_fips);
-    //   }
-  
-    //   updateVisualizations(vis);
-  
-    //   vis.brushG.call(vis.brush.move, null);
-    // }
+        filteredSightings = allData
+          .filter((d) => {
+            const encouter_len = d.encounter_length;
+            return encouter_len >= range[0] && encouter_len <= range[1];
+          })
+          .map((d) => d.id);
+      }
+    }
   }
