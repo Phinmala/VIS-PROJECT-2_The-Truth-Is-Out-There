@@ -35,5 +35,6 @@ d3.csv("data/ufo_sightings.csv")
     // Initialize charts and show them
     leafletMap = new LeafletMap({ parentElement: "#my-map" }, allData);
     timeline = new Timeline({ parentElement: "#timeline" });
+    barchar = new Barchart({ parentElement: "#barchart"});
   })
   .catch((error) => console.error(error));
