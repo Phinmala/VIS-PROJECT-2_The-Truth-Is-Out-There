@@ -13,7 +13,7 @@ class LeafletMap {
     this.colorAttribute = "default"; 
     this.colorSchemes = {
         // Define color schemes for different attributes
-        year: d3.scaleSequential(d3.interpolateTurbo).domain([1949, 2013]), 
+        year: d3.scaleLinear(d3.interpolateTurbo).domain([1949, 2013]), 
         month: d3.scaleOrdinal(d3.schemeCategory10), 
         timeOfDay: d3.scaleOrdinal().domain(["morning", "afternoon", "evening", "night"]).range(["yellow", "orange", "red", "navy"]),
         ufoShape: d3.scaleOrdinal(d3.schemeSet3), 
@@ -190,8 +190,8 @@ class LeafletMap {
               else if (hour >= 16 && hour < 20) return "red"; // Evening
             } else if (vis.colorAttribute === "year") {
                 const colorScale = d3.scaleOrdinal()
-                  .domain(["1940s", "1950s", "1960s", "1970s", "1980s", "1990s", "2000s", "2010s"])
-                  .range(["red", "orange", "yello", "green", "blue", "purple", "pink", "white"]);
+                .domain(["1900s", "1910s", "1920s", "1930s", "1940s", "1950s", "1960s", "1970s", "1980s", "1990s", "2000s", "2010s"])
+                .range(['#9a649c', '#8f5f98', '#845993', '#79448e', '#6f3f8a', '#643a85', '#59357f', '#4e307a', '#432b75', '#38266f', '#2d216a', '#4a024d']);
                 const year = new Date(d.date_time).getFullYear();
                 const decade = Math.floor(year / 10) * 10;
                 return colorScale(decade + "s");
@@ -292,9 +292,10 @@ class LeafletMap {
           case "default":
             return "steelblue";
           case "year":
-              colorScale = d3.scaleOrdinal()
-                .domain(["1940s", "1950s", "1960s", "1970s", "1980s", "1990s", "2000s", "2010s"])
-                .range(["red", "orange", "yellow", "green", "blue", "purple", "pink", "white"]);
+            colorScale = d3.scaleOrdinal()
+            .domain(["1900s", "1910s", "1920s", "1930s", "1940s", "1950s", "1960s", "1970s", "1980s", "1990s", "2000s", "2010s"])
+            .range(['#9a649c', '#8f5f98', '#845993', '#79448e', '#6f3f8a', '#643a85', '#59357f', '#4e307a', '#432b75', '#38266f', '#2d216a', '#4a024d']);
+          
               const year = new Date(d.date_time).getFullYear();
               const decade = Math.floor(year / 10) * 10; 
               return colorScale(decade + "s");
