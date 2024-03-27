@@ -6,29 +6,17 @@
     <link rel="stylesheet" href="css/leaflet.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        #heatmap-container {
-            display: flex;
-        }
-
-        #heatmap1, #heatmap2 {
-            flex: 1;
-            margin: 5px;
-        }
     </style>
 </head>
 <body>
     <div id="my-map"></div> 
-    <div id="heatmap-container">
-        <div id="heatmap1"></div> 
-        <div id="heatmap2"></div> 
-    </div>
-    
+    <div id="heatmap"></div> 
     <script src="js/heatmapChart.js"></script>
     <script src="js/d3.v6.min.js"></script>
     <script src="js/leaflet.js"></script>
     <script src="js/main.js"></script>
     <script src="js/leafletMap.js"></script>
 
-    <div id="tooltip" style="position: absolute; opacity: 0; background-color: white; border: 1px solid black; padding: 5px; pointer-events: none;"></div>
+    <div id="tooltip"></div>
 </body>
 </html>
