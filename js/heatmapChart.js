@@ -1,5 +1,5 @@
 class HeatmapChart {
-    constructor(_config, _data) {
+    constructor(_config) {
         const defaultMargin = { top: 50, right: 0, bottom: 100, left: 100 };
         const margin = _config.margin || defaultMargin;
         const scaleGrid = 0.5;
@@ -12,7 +12,7 @@ class HeatmapChart {
 
         };
 
-        this.data = _data;
+        this.data = allData;
         this.monthColors = {
             'Jan': ["#460000", "#740000", "#a20000", "#d10000", "#ff0000", "#ff2e2e", "#ff5d5d", "#ff8b8b", "#ffb9b9", "#ffe8e8"],
             'Feb': ["#3f0714", "#690b22", "#921030", "#bc143d", "#e6194b", "#eb436c", "#ef6d8c", "#f496ad", "#f8c0ce", "#fdeaef"],
