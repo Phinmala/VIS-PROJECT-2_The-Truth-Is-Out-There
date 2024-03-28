@@ -44,7 +44,7 @@ d3.csv("data/ufo_sightings.csv")
       // leafletMap.updateVis();
       timeline.updateVis();
       barchart.updateVis();
-      // piechart.updateVis();
+      piechart.updateVis();
       heatMap.updateVis();
       // radarChart.updateVis();
 
