@@ -7,7 +7,8 @@ class pieChart {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 600, 
             containerHeight: _config.containerHeight || 600, 
-            margin: _config.margin || {top: 25, right: 25, bottom: 35, left: 55}
+            margin: _config.margin || {top: 25, right: 25, bottom: 35, left: 55},
+            tooltipPadding: _config.tooltipPadding || 15
         }
         this.data = _data;
         this.initVis();
@@ -24,16 +25,23 @@ class pieChart {
 
         vis.chart = d3.select(vis.config.parentElement)
             .attr("width", vis.width)
-            .attr("height", vis.height)
-            //.attr("transform", `translate(${vis.width/2}, ${vis.height/2})`);
-        // Array.from(vis.countData, ([key, values]) => {
-        //     console.log(key);
-        //     console.log(values.length);
-        // });
+            .attr("height", vis.height);
+
         vis.radius = Math.min(vis.width, vis.height) / 2;
 
         vis.colorScale = d3.scaleOrdinal()
-            .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
+            .domain(["unknown", "other", 
+                "cylinder", "circle", "sphere", "disk", "oval", "cigar", "round", "dome", "crescent",
+                "light", "fireball", "flash", "flare",
+                "rectangle", "diamond", "cross", "hexagon",
+                "chevron", "triangle", "delta", "cone", "pyramid",
+                "formation", "changing", "egg", "teardrop", "changed"])
+            .range(["#A9A9A9", "#6A6A6A",
+                "#E1E3FF", "#B9BDFD", "#A1A7FF", "#8088FE", "#636DFF", "#4551FF", "#202DE0", "#030C92", "#010654",
+                "#FFE286", "#FFD03F", "#FFC100", "#DBA601", 
+                "#8EFF72", "#31F401", "#26BF00", "#125401", 
+                "#FA7F7F", "#FF4747", "#FF0000", "#BD0000", "#7F0000", 
+                "#B87FFA", "#9B45FC", "#7800FF", "#6200D1", "#3B007E"]);
 
         let pie = d3.pie()
             .value(function(d) {return d[1].length})
@@ -57,5 +65,27 @@ class pieChart {
                 .attr("stroke", "black")
                 .style("stroke-width", "2px")
                 .style("opacity", 0.7);
-    }    
+        
+        vis.updateVis();
+    }   
+    
+    updateVis() {
+        let vis = this;
+
+        vis.arcs
+            .on('mouseover', (event, d) => {
+                console.log(d);
+            d3.select('#tooltip')
+                .style('display', 'block')
+                .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')   
+                .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                .html(`
+                <div class="tooltip-title">UFO Shape: ${d.data[0]}</div>
+                <i>Number of Occurences: ${d.data[1].length}</i>
+                `);
+            })
+            .on('mouseleave', () => {
+                d3.select('#tooltip').style('display', 'none');
+            });
+    }
 }
