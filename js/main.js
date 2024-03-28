@@ -21,6 +21,7 @@ d3.csv("data/ufo_sightings.csv")
           d.latitude = +d.latitude; //make sure these are not strings
           d.longitude = +d.longitude; //make sure these are not strings
           d.date_time = new Date(d.date_time); // Create a Date object from the string
+          d.ufo_shape = d.ufo_shape == "NA" ? "unknown" : d.ufo_shape;
           return d; // return the data
       } else {
           // Either lat or long does not exist so increment the count
@@ -35,6 +36,7 @@ d3.csv("data/ufo_sightings.csv")
     // Initialize charts and show them
     leafletMap = new LeafletMap({ parentElement: "#my-map" }, allData);
     timeline = new Timeline({ parentElement: "#timeline" });
-    barchar = new Barchart({ parentElement: "#barchart"});
+    barchart = new Barchart({ parentElement: "#barchart"});
+    piechart = new PieChart({parentElement: "#piechart"})
   })
   .catch((error) => console.error(error));
