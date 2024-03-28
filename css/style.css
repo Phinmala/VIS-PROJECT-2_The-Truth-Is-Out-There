@@ -1,20 +1,51 @@
+body {
+  font-family: sans-serif;
+  font-size: 13px;
+  padding: 20px;
+}
+
+#map-container {
+  position: relative;
+}
 #my-map {
   width: 100%;
   height: 500px;
 }
-
-#tooltip {
-  position: absolute;
-  opacity: 0;
-  background: #fff;
-  box-shadow: 2px 2px 3px 0px rgb(92 92 92 / 0.5);
-  border: 1px solid #ddd;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 2px 8px;
+#map-background {
+    position: absolute; 
+    z-index: 10000000; 
+    right: 0;
 }
-.tooltip-label {
-  font-weight: 500;
+#color-by-option {
+  position: absolute; 
+  z-index: 10000000; 
+  left: 0;
+}
+.count {
+  position: absolute;
+  top: -25px; 
+  right: 1px; 
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
   font-size: 10px;
-  color: #888;
+}
+
+.tooltip {
+  position: absolute;
+  background: #fff;
+  z-index: 1000000;
+  box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px;
+  color: #333;
+}
+
+.tooltip-title {
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
 }
