@@ -1,48 +1,42 @@
-d3.csv('data/ufo_sightings.csv')
-    .then(data => {
-        console.log(data[0]);
-        console.log(data.length);
-        const filteredData = data.filter(d => d.latitude !== "NA" && d.longitude !== "NA");
-        //for some reason theres a data point (row 43784 in ufo_sightings) where the latitude doesn't exist
-        //it prevents the data from loading on the map so i filtered it out
-        filteredData.forEach(d => {
-            //console.log(d);
-            d.latitude = +d.latitude; //make sure these are not strings
-            d.longitude = +d.longitude; //make sure these are not strings
-        });
+// Create global variables so that the data doesn't need to be a parameter for each visualization
+// allData is all of the data we can use
+// filteredData is what has been selected through brushing
 
-        // Initialize chart and then show it
-        leafletMap = new LeafletMap({ parentElement: '#my-map' }, filteredData);
-        const sightingsByHour = aggregateSightingsByHour(data);
-        const sightingsByHourSorted = sightingsByHour.sort((a, b) => parseInt(a.hour) - parseInt(b.hour));
+let allData, filteredSightings = [];
 
-        drawRadarChart("#radarChart", sightingsByHourSorted);
+// Create the tooltip for easy access from the map and timeline
+const tooltip = d3
+  .select("body")
+  .append("div")
+  .attr("class", "tooltip")
+  .style("visibility", "hidden");
+
+// Load the data from the CSV file
+d3.csv("data/ufo_sightings.csv")
+  .then((data) => {
+    let noCoordinatesCount = 0; 
+    allData = data.map((d, index) => {
+      // check that the latitude and longitude exist for plotting
+      if (d.latitude !== "NA" && d.longitude !== "NA") {
+          d.id = index; // Give the sighting an ID
+          d.latitude = +d.latitude; //make sure these are not strings
+          d.longitude = +d.longitude; //make sure these are not strings
+          d.date_time = new Date(d.date_time); // Create a Date object from the string
+          d.ufo_shape = d.ufo_shape == "NA" ? "unknown" : d.ufo_shape;
+          return d; // return the data
+      } else {
+          // Either lat or long does not exist so increment the count
+          noCoordinatesCount++;
+          return null;
+      }
+    }).filter(d => d !== null);
+
+    d3.select("#noCoordinatesCount")
+    .text(`Unmapped sightings: ${noCoordinatesCount}`);
 
 
-    })
-    .catch(error => console.error(error));
-
-function aggregateSightingsByHour(data) {
-    const hourCounts = {};
-
-    data.forEach(d => {
-        const dateTime = d.date_time;
-        let hour = dateTime.split(' ')[1].split(':')[0];
-
-        if (hour === "24") {
-            hour = "00";
-        }
-
-        if (!hourCounts[hour]) {
-            hourCounts[hour] = 0;
-        }
-        hourCounts[hour] += 1;
-    });
-
-    const formattedData = Object.keys(hourCounts).map(hour => {
-        console.log(`Hour: ${hour}, Frequency: ${hourCounts[hour]}`);
-        return { hour: hour, count: hourCounts[hour] };
-    });
-
-    return formattedData;
-}
+    // Initialize charts and show them
+    leafletMap = new LeafletMap({ parentElement: "#my-map" }, allData);
+    radarChart = new RadarChart({ parentElement: "#radarChart" });
+  })
+  .catch((error) => console.error(error));
