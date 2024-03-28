@@ -41,11 +41,11 @@ class HeatmapChart {
 
     initVis() {
         let vis = this;
+        vis.allDecades = [2010, 2000, 1990, 1980, 1970, 1960, 1950, 1940, 1930, 1920, 1910, 1900];
         vis.processedData = vis.aggregateSightingsByDecade(vis.data);
-        vis.uniqueDecades = Array.from(new Set(vis.processedData.map(d => d.decade))).sort(d3.descending)
         vis.uniqueMonths = vis.monthNames;
         vis.gridSize = Math.floor((vis.config.width / 12) * vis.config.cellSizePercentage * vis.config.scaleGrid);
-        vis.height = vis.gridSize * vis.uniqueDecades.length;
+        vis.height = vis.gridSize * vis.allDecades.length;
 
         vis.svg = d3.select(vis.config.parentElement).append("svg")
             .attr("width", vis.config.width + vis.config.margin.left + vis.config.margin.right)
@@ -60,7 +60,7 @@ class HeatmapChart {
 
         vis.yScale = d3.scaleBand()
             .range([vis.height, 0])
-            .domain(vis.uniqueDecades)
+            .domain(vis.allDecades)
             .padding(1 - vis.config.cellSizePercentage);
 
         vis.svg.append("g")
@@ -71,6 +71,26 @@ class HeatmapChart {
         vis.svg.append("g")
             .attr("class", "y-axis")
             .call(d3.axisLeft(vis.yScale).tickFormat(d => `${d}s`));
+
+        vis.svg.append("text")
+            .attr("class", "x axis-title")
+            .attr("text-anchor", "middle")
+            .attr("x", vis.config.width / 4 - 10)
+            .attr("y", vis.height + vis.config.margin.bottom - 50)
+            .text("Month");
+
+        vis.svg.append("text")
+            .attr("class", "y axis-title")
+            .attr("text-anchor", "middle")
+            .attr("transform", `translate(-60,${vis.height / 2}) rotate(-90)`)
+            .text("Decade");
+
+        vis.svg.append("text")
+            .attr("class", "chart-title")
+            .attr("x", vis.config.width / 4 -10)
+            .attr("y", vis.height + vis.config.margin.bottom - 20) 
+            .attr("text-anchor", "middle")
+            .text("Decadal Distribution of UFO Sightings by Month");
 
         vis.updateVis()
     }
