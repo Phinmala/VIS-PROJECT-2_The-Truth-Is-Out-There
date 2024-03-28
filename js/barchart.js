@@ -85,6 +85,13 @@ class Barchart {
       .style("text-anchor", "middle")
       .text("Encounter Length (seconds)");
 
+    vis.svg
+      .selectAll(".x-axis text")
+      .style("text-anchor", "end")
+      .attr("transform", "rotate(-33)")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em");
+
     // Y axis label
     vis.svg
       .append("text")
@@ -189,13 +196,6 @@ class Barchart {
       .attr("width", vis.x.bandwidth())
       .attr("height", (d) => vis.config.containerHeight - vis.y(d.length))
       .style("fill", "steelblue");
-
-    vis.svg
-      .selectAll(".x-axis text")
-      .style("text-anchor", "end")
-      .attr("transform", "rotate(-33)")
-      .attr("dx", "-.8em")
-      .attr("dy", ".15em");
 
     // The following code was modified from https://observablehq.com/@giorgiofighera/histogram-with-tooltips-and-bars-highlighted-on-mouse-over
     d3.selectAll("rect.barchart-bar")
