@@ -41,7 +41,7 @@ d3.csv("data/ufo_sightings.csv")
 
     updateVisualizations = (currentVis) => {
       // Update all of the visualizations' content
-      // leafletMap.updateVis();
+      leafletMap.updateVis();
       timeline.updateVis();
       barchart.updateVis();
       piechart.updateVis();
