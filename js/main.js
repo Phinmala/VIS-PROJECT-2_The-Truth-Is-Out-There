@@ -45,7 +45,7 @@ d3.csv("data/ufo_sightings.csv")
       timeline.updateVis();
       barchart.updateVis();
       // piechart.updateVis();
-      // heatMap.updateVis();
+      heatMap.updateVis();
       // radarChart.updateVis();
 
       // Remove the brushes from the visualizations
@@ -55,7 +55,7 @@ d3.csv("data/ufo_sightings.csv")
       // Keep the brush if the currentVis is piechart, heatmap, or radarchart (only keep on that vis)
       // if (currentVis != piechart)
       //   piechart.brushG.call(piechart.brush.move, null);
-      // if (currentVis != heatMap) heatMap.brushG.call(heatMap.brush.move, null);
+      if (currentVis != heatMap) heatMap.brushG.call(heatMap.brush.move, null);
       // if (currentVis != radarChart)
       //   radarChart.brushG.call(radarChart.brush.move, null);
     };

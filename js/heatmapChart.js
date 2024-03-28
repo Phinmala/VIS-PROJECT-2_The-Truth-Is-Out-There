@@ -12,6 +12,9 @@ class HeatmapChart {
     };
 
     this.data = allData;
+    this.allDecades = [
+      2010, 2000, 1990, 1980, 1970, 1960, 1950, 1940, 1930, 1920, 1910, 1900,
+    ];
     this.monthColors = {
       Jan: [
         "#460000",
@@ -180,12 +183,8 @@ class HeatmapChart {
   }
 
   initVis() {
-    let vis = this;
-    vis.allDecades = [
-      2010, 2000, 1990, 1980, 1970, 1960, 1950, 1940, 1930, 1920, 1910, 1900,
-    ];
-    vis.processedData = vis.aggregateSightingsByDecade(vis.data);
-    vis.uniqueMonths = vis.monthNames;
+    const vis = this;
+
     vis.gridSize = Math.floor(
       (vis.config.width / 12) *
         vis.config.cellSizePercentage *
@@ -213,7 +212,7 @@ class HeatmapChart {
     vis.xScale = d3
       .scaleBand()
       .range([0, vis.gridSize * 12])
-      .domain(vis.uniqueMonths)
+      .domain(vis.monthNames)
       .padding(1 - vis.config.cellSizePercentage);
 
     vis.yScale = d3
@@ -256,16 +255,41 @@ class HeatmapChart {
       .attr("text-anchor", "middle")
       .text("Decadal Distribution of UFO Sightings by Month");
 
+    vis.brushG = vis.svg.append("g").attr("class", "brush");
+
+    vis.brush = d3
+      .brush()
+      .extent([
+        [0, 0],
+        [vis.gridSize * 12, vis.height],
+      ])
+      // Reset the filtered sightings
+      .on("start", () => (filteredSightings = []))
+      .on("end", (result) => vis.filterBySelection(result, vis));
+
     vis.updateVis();
   }
 
   updateVis() {
-    let vis = this;
+    const vis = this;
+
+    // Only include brushed data, if applicable
+    // Otherwise, include everything in allData
+    vis.data = allData.filter(
+      (d) =>
+        filteredSightings.length == 0 ||
+        (filteredSightings.length != 0 &&
+          filteredSightings.find(
+            (filteredSighting) => filteredSighting == d.id
+          ))
+    );
+
+    vis.processedData = vis.aggregateSightingsByDecade(vis.data);
+
     vis.cells = vis.svg
-      .selectAll(".cell")
+      .selectAll("rect.cell")
       .data(vis.processedData, (d) => `${d.decade}:${d.month}`)
-      .enter()
-      .append("rect")
+      .join("rect")
       .attr("class", "cell")
       .attr("x", (d) => vis.xScale(vis.getMonthName(d.month)))
       .attr("y", (d) => vis.yScale(d.decade))
@@ -287,10 +311,35 @@ class HeatmapChart {
           .style("left", event.pageX + 10 + "px")
           .style("top", event.pageY - 10 + "px");
       })
+      .on("mousemove", function (event) {
+        tooltip
+          .style("top", event.pageY - 10 + "px")
+          .style("left", event.pageX + 10 + "px");
+      })
       .on("mouseout", function () {
         d3.select(this).attr("stroke-width", "0");
         tooltip.style("visibility", "hidden");
+      })
+      .on("mousedown", function (event) {
+        vis.svg
+          .select(".overlay")
+          .node()
+          .dispatchEvent(
+            new MouseEvent("mousedown", {
+              bubbles: true,
+              clientX: event.clientX,
+              clientY: event.clientY,
+              pageX: event.pageX,
+              pageY: event.pageY,
+              view: window,
+              layerX: event.layerX,
+              layerY: event.layerY,
+              cancelable: true,
+            })
+          );
       });
+
+    vis.brushG.call(vis.brush);
   }
 
   initializeColorScales() {
@@ -355,5 +404,66 @@ class HeatmapChart {
       return { decade, month, count };
     });
     return formattedData;
+  }
+
+  filterBySelection(result, vis) {
+    if (!result.sourceEvent) return; // Only transition after input
+
+    const extent = result.selection;
+
+    if (!extent) {
+      // Reset the filter (include them all)
+      filteredSightings = [];
+    } else {
+      // Figure out where each month and decade is on the graph
+      const xRange = [extent[0][0], extent[1][0]];
+      const yRange = [extent[0][1], extent[1][1]];
+      const xBandwidth = vis.xScale.bandwidth();
+      const yBandwidth = vis.yScale.bandwidth();
+
+      // Determine with months and decades were selected
+      const selectedMonths = [];
+      const selectedDecades = [];
+      vis.monthNames.forEach((month, index) => {
+        const cellStart = vis.xScale(month);
+        const cellEnd = cellStart + xBandwidth;
+
+        if (cellEnd >= xRange[0] && cellStart <= xRange[1])
+          selectedMonths.push(index);
+      });
+      vis.allDecades.forEach((decade) => {
+        const cellStart = vis.yScale(decade);
+        const cellEnd = cellStart + yBandwidth;
+
+        if (cellEnd >= yRange[0] && cellStart <= yRange[1])
+          selectedDecades.push(decade);
+      });
+
+      // Determine the start and end month and decade
+      const monthRange = [
+        selectedMonths[0],
+        selectedMonths[selectedMonths.length - 1],
+      ];
+      const decadeRange = [
+        selectedDecades[selectedDecades.length - 1],
+        selectedDecades[0],
+      ];
+
+      // If a sighting's date is within the month and decade range, add its ID to filteredSightings
+      vis.data.forEach((sighting) => {
+        const sightingMonth = sighting.date_time.getMonth();
+        const sightingYear = sighting.date_time.getFullYear();
+        if (
+          sightingMonth >= monthRange[0] &&
+          sightingMonth <= monthRange[1] &&
+          sightingYear >= decadeRange[0] &&
+          sightingYear <= decadeRange[1] + 9
+        )
+          filteredSightings.push(sighting.id);
+      });
+    }
+
+    // Update all visualizations
+    updateVisualizations(vis);
   }
 }
