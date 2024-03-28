@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Interactive map with Leaflet</title>
+    <title>Project 2: The Truth is Out There</title>
     <link rel="icon" href="data:;base64,iVBORwOKGO=" />
     <link rel="stylesheet" href="css/leaflet.css">
     <link rel="stylesheet" href="css/style.css">
@@ -9,14 +9,25 @@
     </style>
 </head>
 <body>
-    <div id="my-map"></div> 
-    <div id="heatmap"></div> 
-    <script src="js/heatmapChart.js"></script>
+    <div id="map-container">
+        <div id="noCoordinatesCount" class="count"></div>
+        <div id="my-map"></div>
+    </div>
+    <dig id="color-by-option"></dig>
+    <div id="map-background"></div>
+    <div id="timeline"></div>
+    <div id="barchart"></div>
+    <div id="piechart"></div>
+    <div id="heatmap"></div>
+
     <script src="js/d3.v6.min.js"></script>
     <script src="js/leaflet.js"></script>
     <script src="js/main.js"></script>
     <script src="js/leafletMap.js"></script>
-
+    <script src="js/timeline.js"></script>
+    <script src="js/barchart.js"></script>
+    <script src="js/piechart.js"></script>
+    <script src="js/heatmapChart.js"></script>
     <div id="tooltip"></div>
 </body>
 </html>
