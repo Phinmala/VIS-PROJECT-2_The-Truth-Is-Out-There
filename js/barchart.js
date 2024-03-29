@@ -131,57 +131,9 @@ class Barchart {
           ))
     );
 
-    // Split the sightings into groups by the encounter length (includes all sighting data)
+    // Split the sightings into groups by the encounter length
     // Create an array of arrays (one sub-array for each duration group)
-    vis.durationGroups = [];
-    for (let i = 0; i < vis.lengthGroup.length; i++) {
-      vis.durationGroups[i] = [];
-    }
-    // Add each encounter to the correct group
-    vis.data.forEach((encounter) => {
-      const length = +encounter.encounter_length;
-      let index;
-      if (length < 5) {
-        index = 0;
-      } else if (length < 15) {
-        index = 1;
-      } else if (length < 30) {
-        index = 2;
-      } else if (length < 60) {
-        index = 3;
-      } else if (length < 120) {
-        index = 4;
-      } else if (length < 180) {
-        index = 5;
-      } else if (length < 240) {
-        index = 6;
-      } else if (length < 300) {
-        index = 7;
-      } else if (length < 360) {
-        index = 8;
-      } else if (length < 420) {
-        index = 9;
-      } else if (length < 600) {
-        index = 10;
-      } else if (length < 780) {
-        index = 11;
-      } else if (length < 1200) {
-        index = 12;
-      } else if (length < 1500) {
-        index = 13;
-      } else if (length < 3000) {
-        index = 14;
-      } else if (length < 6000) {
-        index = 15;
-      } else if (length < 12000) {
-        index = 16;
-      } else if (length < 30000) {
-        index = 17;
-      } else {
-        index = 18;
-      }
-      vis.durationGroups[index].push(encounter);
-    });
+    vis.durationGroups = vis.groupData(vis.data);
 
     vis.y.domain([0, Math.max(...vis.durationGroups.map((arr) => arr.length))]);
     vis.yAxis.call(d3.axisLeft(vis.y));
@@ -259,6 +211,7 @@ class Barchart {
       const brushEnd = extent[1];
       const bandwidth = vis.x.bandwidth();
       const filteredDurations = [];
+      const durationGroupsAllData = vis.groupData(allData);
 
       // Determine the selected durations
       vis.lengthGroup.forEach((group) => {
@@ -277,12 +230,68 @@ class Barchart {
 
       // Add the selected data's IDs to filteredSightings
       for (let i = startIndex; i <= endIndex; i++) {
-        filteredSightings = filteredSightings.concat(vis.durationGroups[i]);
+        filteredSightings = filteredSightings.concat(durationGroupsAllData[i]);
       }
       filteredSightings = filteredSightings.map((sighting) => sighting.id);
     }
 
     // Update all visualizations
     updateVisualizations(vis);
+  }
+
+  // Group data by the time spans
+  groupData(dataToBeGrouped) {
+    let durationGroups = [];
+    for (let i = 0; i < 19; i++) {
+      durationGroups[i] = [];
+    }
+
+    // Add each encounter to the correct group
+    dataToBeGrouped.forEach((encounter) => {
+      const length = +encounter.encounter_length;
+      let index;
+      if (length < 5) {
+        index = 0;
+      } else if (length < 15) {
+        index = 1;
+      } else if (length < 30) {
+        index = 2;
+      } else if (length < 60) {
+        index = 3;
+      } else if (length < 120) {
+        index = 4;
+      } else if (length < 180) {
+        index = 5;
+      } else if (length < 240) {
+        index = 6;
+      } else if (length < 300) {
+        index = 7;
+      } else if (length < 360) {
+        index = 8;
+      } else if (length < 420) {
+        index = 9;
+      } else if (length < 600) {
+        index = 10;
+      } else if (length < 780) {
+        index = 11;
+      } else if (length < 1200) {
+        index = 12;
+      } else if (length < 1500) {
+        index = 13;
+      } else if (length < 3000) {
+        index = 14;
+      } else if (length < 6000) {
+        index = 15;
+      } else if (length < 12000) {
+        index = 16;
+      } else if (length < 30000) {
+        index = 17;
+      } else {
+        index = 18;
+      }
+      durationGroups[index].push(encounter);
+    });
+
+    return durationGroups;
   }
 }
