@@ -213,8 +213,9 @@ class RadarChart {
       .angle((d, i) => i * vis.angleSlice);
 
     vis.radarArea = vis.svg
-      .append("path")
-      .datum(vis.agreggatedData)
+      .selectAll("path.radarArea")
+      .data([vis.agreggatedData])
+      .join("path")
       .attr("class", "radarArea")
       .attr("d", vis.radarLine)
       .style("fill", "black")
@@ -251,8 +252,9 @@ class RadarChart {
       });
 
     vis.radarOutline = vis.svg
-      .append("path")
-      .datum(vis.agreggatedData)
+      .selectAll("path.radarOutline")
+      .data([vis.agreggatedData])
+      .join("path")
       .attr("class", "radarOutline")
       .attr("d", vis.radarLine)
       .style("stroke", "black")
