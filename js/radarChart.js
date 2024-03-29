@@ -125,19 +125,6 @@ class RadarChart {
       .startAngle((d, i) => i * vis.angleSlice - vis.angleSlice / 2)
       .endAngle((d, i) => i * vis.angleSlice + vis.angleSlice / 2);
 
-    vis.axisGrid = vis.svg.append("g").attr("class", "axisWrapper");
-    Array.from(Array(24).keys()).forEach((i) => {
-      let angle = vis.getAngle(i);
-      vis.axisGrid
-        .append("line")
-        .attr("class", "axis")
-        .attr("x1", 0)
-        .attr("y1", 0)
-        .attr("x2", vis.radius * Math.cos(angle))
-        .attr("y2", vis.radius * Math.sin(angle))
-        .attr("stroke", "lightgrey")
-        .attr("stroke-width", "1px");
-    });
     vis.labels = vis.svg
       .selectAll(".radarLabel")
       .data(vis.hours)
@@ -170,6 +157,20 @@ class RadarChart {
       .attr("dominant-baseline", "middle")
       .style("font-size", "24px")
       .text("UFO Sightings Over 24 Hours");
+
+    vis.hoverSvg = vis.svg.append("g").attr("class", "axisHoverWrapper");
+    Array.from(Array(24).keys()).forEach((i) => {
+      let angle = vis.getAngle(i);
+      vis.hoverSvg
+        .append("line")
+        .attr("class", "axis")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", vis.radius * Math.cos(angle))
+        .attr("y2", vis.radius * Math.sin(angle))
+        .attr("stroke", "lightgrey")
+        .attr("stroke-width", "1px");
+    });
 
     vis.updateVis();
   }
@@ -219,20 +220,6 @@ class RadarChart {
       .style("fill", "black")
       .style("fill-opacity", 0.1);
 
-    vis.hoverSvg = vis.svg.append("g").attr("class", "axisWrapper");
-    Array.from(Array(24).keys()).forEach((i) => {
-      let angle = vis.getAngle(i);
-      vis.hoverSvg
-        .append("line")
-        .attr("class", "axis")
-        .attr("x1", 0)
-        .attr("y1", 0)
-        .attr("x2", vis.radius * Math.cos(angle))
-        .attr("y2", vis.radius * Math.sin(angle))
-        .attr("stroke", "transparent")
-        .attr("stroke-width", "1px");
-    });
-
     vis.hoverSvg
       .selectAll(".axis-hover")
       .data(vis.agreggatedData)
@@ -260,7 +247,6 @@ class RadarChart {
       })
       .on("mouseout", function () {
         d3.selectAll(".radarPoint").style("visibility", "hidden");
-
         tooltip.style("visibility", "hidden");
       });
 
