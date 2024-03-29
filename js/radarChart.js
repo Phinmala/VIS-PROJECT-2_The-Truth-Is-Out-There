@@ -33,32 +33,6 @@ class RadarChart {
       "#003366", // 22h
       "#003366", // 23h
     ];
-    this.maxFrequencies = {
-      24: 4802,
-      "01": 3210,
-      "02": 2353,
-      "03": 2008,
-      "04": 1529,
-      "05": 1590,
-      "06": 1224,
-      "07": 905,
-      "08": 803,
-      "09": 958,
-      10: 1166,
-      11: 1144,
-      12: 1368,
-      13: 1303,
-      14: 1322,
-      15: 1433,
-      16: 1620,
-      17: 2592,
-      18: 4002,
-      19: 6147,
-      20: 8617,
-      21: 11445,
-      22: 10837,
-      23: 7953,
-    };
     this.hours = [
       "24",
       "01",
@@ -192,7 +166,7 @@ class RadarChart {
     vis.rScale = d3
       .scaleLinear()
       .range([0, vis.radius])
-      .domain([0, d3.max(Object.values(vis.maxFrequencies))]);
+      .domain([0, d3.max(vis.agreggatedData, d => d.count)]);
 
     vis.maxRadiusScaled = vis.rScale(11445);
 
