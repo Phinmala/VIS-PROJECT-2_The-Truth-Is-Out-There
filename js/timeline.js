@@ -218,7 +218,7 @@ class Timeline {
         .map((d) => d.id);
     }
 
-    // Uncomment the following line once the updateVisualizations method is added to main.js
-    // updateVisualizations(vis);
+    // Update all visualizations
+    updateVisualizations(vis);
   }
 }
