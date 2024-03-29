@@ -66,5 +66,6 @@ d3.csv("data/ufo_sightings.csv")
     barchart = new Barchart({ parentElement: "#barchart" });
     piechart = new PieChart({ parentElement: "#piechart" });
     heatMap = new HeatmapChart({ parentElement: "#heatmap" });
+    radarChart = new RadarChart({ parentElement: "#radarchart" });
   })
   .catch((error) => console.error(error));
