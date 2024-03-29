@@ -169,7 +169,9 @@ class RadarChart {
       .range([0, vis.radius])
       .domain([0, d3.max(vis.agreggatedData, (d) => d.count)]);
 
-    vis.maxRadiusScaled = vis.rScale(11445);
+    vis.maxRadiusScaled = vis.rScale(
+      d3.max(vis.agreggatedData, (d) => d.count)
+    );
 
     vis.svg
       .selectAll("path.hourColor")
