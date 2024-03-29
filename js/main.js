@@ -5,6 +5,7 @@
 let allData,
   filteredSightings = [];
 let leafletMap, timeline, barchart, piechart, heatMap, radarChart;
+let removeUFOShapeSelection;
 
 // Create the tooltip for easy access from the map and timeline
 const tooltip = d3
@@ -47,10 +48,12 @@ d3.csv("data/ufo_sightings.csv")
       piechart.updateVis();
       heatMap.updateVis();
       radarChart.updateVis();
-
+      
       // Remove the brushes from the visualizations
       timeline.brushG.call(timeline.brush.move, null);
       barchart.brushG.call(barchart.brush.move, null);
+      // Clear the shape selection if that's not what was just updated
+      if (currentVis != piechart) removeUFOShapeSelection();
       // Keep the brush if the currentVis is the heatmap
       if (currentVis != heatMap) heatMap.brushG.call(heatMap.brush.move, null);
       // TODO: add logic here to only remove the map brush if it's not the one that was just created
@@ -75,12 +78,28 @@ d3.csv("data/ufo_sightings.csv")
         .filter((x) => x.selected)
         .map((x) => x.value);
 
-      // Filter the sightings by those that are of the selected shapes
-      filteredSightings = allData
-        .filter((sighting) => selectedValues.includes(sighting.ufo_shape))
-        .map((sighting) => sighting.id);
+      if (selectedValues.length > 0) {
+        // Filter the sightings by those that are of the selected shapes
+        filteredSightings = allData
+          .filter((sighting) => selectedValues.includes(sighting.ufo_shape))
+          .map((sighting) => sighting.id);
 
-      // Update all visualizations to only show the selected shapes
+        // Update all visualizations to only show the selected shapes
+        updateVisualizations(piechart);
+      }
+    };
+
+    removeUFOShapeSelection = () => {
+      for (let i = 0; i < shapeSelect.length; i++) {
+        shapeSelect[i].selected = false;
+      }
+    };
+
+    // Remove the selected UFO shapes when the associated Clear button is clicked
+    // Reset all visualizations
+    document.getElementById("clearShapeFilterBtn").onclick = () => {
+      removeUFOShapeSelection();
+      filteredSightings = [];
       updateVisualizations(piechart);
     };
   })
