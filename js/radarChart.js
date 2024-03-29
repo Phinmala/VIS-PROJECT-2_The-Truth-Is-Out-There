@@ -196,13 +196,14 @@ class RadarChart {
 
     vis.maxRadiusScaled = vis.rScale(11445);
 
-    vis.agreggatedData.forEach((d, i) => {
-      vis.svg
-        .append("path")
-        .attr("d", vis.labelArc(d, i))
-        .attr("fill", vis.hourlyColors[i % 24])
-        .attr("transform", `translate(0, 0)`);
-    });
+    vis.svg
+      .selectAll("path.hourColor")
+      .data(vis.agreggatedData)
+      .join("path")
+      .attr("class", "hourColor")
+      .attr("d", (d, i) => vis.labelArc(d, i))
+      .attr("fill", (d, i) => vis.hourlyColors[i % 24])
+      .attr("transform", `translate(0, 0)`);
 
     vis.radarLine = d3
       .lineRadial()
