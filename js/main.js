@@ -46,7 +46,7 @@ d3.csv("data/ufo_sightings.csv")
       barchart.updateVis();
       piechart.updateVis();
       heatMap.updateVis();
-      // radarChart.updateVis();
+      radarChart.updateVis();
 
       // Remove the brushes from the visualizations
       // leafletMap.brushG.call(leafletMap.brush.move, null);
