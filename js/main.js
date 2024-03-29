@@ -5,6 +5,7 @@
 let allData,
   filteredSightings = [];
 let leafletMap, timeline, barchart, piechart, heatMap, radarChart;
+let removeUFOShapeSelection;
 
 // Create the tooltip for easy access from the map and timeline
 const tooltip = d3
@@ -47,17 +48,16 @@ d3.csv("data/ufo_sightings.csv")
       piechart.updateVis();
       heatMap.updateVis();
       radarChart.updateVis();
-
+      
       // Remove the brushes from the visualizations
-      // leafletMap.brushG.call(leafletMap.brush.move, null);
       timeline.brushG.call(timeline.brush.move, null);
       barchart.brushG.call(barchart.brush.move, null);
-      // Keep the brush if the currentVis is piechart, heatmap, or radarchart (only keep on that vis)
-      // if (currentVis != piechart)
-      //   piechart.brushG.call(piechart.brush.move, null);
+      // Clear the shape selection if that's not what was just updated
+      if (currentVis != piechart) removeUFOShapeSelection();
+      // Keep the brush if the currentVis is the heatmap
       if (currentVis != heatMap) heatMap.brushG.call(heatMap.brush.move, null);
-      // if (currentVis != radarChart)
-      //   radarChart.brushG.call(radarChart.brush.move, null);
+      // TODO: add logic here to only remove the map brush if it's not the one that was just created
+      // if (currentVis != leafletMap) {REMOVE THE BRUSH FROM THE MAP}
     };
 
     // Create the visualizations
@@ -67,5 +67,40 @@ d3.csv("data/ufo_sightings.csv")
     piechart = new PieChart({ parentElement: "#piechart" });
     heatMap = new HeatmapChart({ parentElement: "#heatmap" });
     radarChart = new RadarChart({ parentElement: "#radarchart" });
+
+    // Filter by UFO shape when any are selected in the dropdown
+    // Get the HTML elements from the DOM
+    const shapeSelect = document.getElementById("UFOShapes");
+    const shapeSelectButton = document.getElementById("shapeFilterBtn");
+    shapeSelectButton.onclick = () => {
+      // Determine which values were selected
+      const selectedValues = [...shapeSelect.options]
+        .filter((x) => x.selected)
+        .map((x) => x.value);
+
+      if (selectedValues.length > 0) {
+        // Filter the sightings by those that are of the selected shapes
+        filteredSightings = allData
+          .filter((sighting) => selectedValues.includes(sighting.ufo_shape))
+          .map((sighting) => sighting.id);
+
+        // Update all visualizations to only show the selected shapes
+        updateVisualizations(piechart);
+      }
+    };
+
+    removeUFOShapeSelection = () => {
+      for (let i = 0; i < shapeSelect.length; i++) {
+        shapeSelect[i].selected = false;
+      }
+    };
+
+    // Remove the selected UFO shapes when the associated Clear button is clicked
+    // Reset all visualizations
+    document.getElementById("clearShapeFilterBtn").onclick = () => {
+      removeUFOShapeSelection();
+      filteredSightings = [];
+      updateVisualizations(piechart);
+    };
   })
   .catch((error) => console.error(error));

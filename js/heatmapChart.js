@@ -450,7 +450,7 @@ class HeatmapChart {
       ];
 
       // If a sighting's date is within the month and decade range, add its ID to filteredSightings
-      vis.data.forEach((sighting) => {
+      allData.forEach((sighting) => {
         const sightingMonth = sighting.date_time.getMonth();
         const sightingYear = sighting.date_time.getFullYear();
         if (
