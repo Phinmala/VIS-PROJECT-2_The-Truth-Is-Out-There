@@ -167,7 +167,7 @@ class RadarChart {
     vis.rScale = d3
       .scaleLinear()
       .range([0, vis.radius])
-      .domain([0, d3.max(vis.agreggatedData, d => d.count)]);
+      .domain([0, d3.max(vis.agreggatedData, (d) => d.count)]);
 
     vis.maxRadiusScaled = vis.rScale(11445);
 
@@ -250,16 +250,17 @@ class RadarChart {
   aggregateSightingsByHour(data) {
     const hourCounts = {};
 
+    // Initialize the count for each hour to 0
+    let availableHours = this.hours;
+    availableHours[0] = "00";
+    availableHours.forEach((hour) => (hourCounts[hour] = 0));
+
     data.forEach((d) => {
       let dateTime = d.date_time;
       if (!(dateTime instanceof Date)) {
         dateTime = new Date(dateTime);
       }
       const hour = dateTime.getHours().toString().padStart(2, "0");
-
-      if (!hourCounts[hour]) {
-        hourCounts[hour] = 0;
-      }
       hourCounts[hour] += 1;
     });
 
@@ -272,10 +273,6 @@ class RadarChart {
       let hourA = a.hour === "24" ? "00" : a.hour;
       let hourB = b.hour === "24" ? "00" : b.hour;
       return parseInt(hourA, 10) - parseInt(hourB, 10);
-    });
-
-    formattedData.forEach((d) => {
-      console.log(`Hour: ${d.hour}, Frequency: ${d.count}`);
     });
 
     return formattedData;
