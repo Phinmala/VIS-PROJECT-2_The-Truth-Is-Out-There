@@ -61,7 +61,7 @@ d3.csv("data/ufo_sightings.csv")
     };
 
     // Create the visualizations
-    leafletMap = new LeafletMap({ parentElement: "#my-map" }, allData);
+    leafletMap = new LeafletMap({ parentElement: "#my-map" });
     timeline = new Timeline({ parentElement: "#timeline" });
     barchart = new Barchart({ parentElement: "#barchart" });
     piechart = new PieChart({ parentElement: "#piechart" });
