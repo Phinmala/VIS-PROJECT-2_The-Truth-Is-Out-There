@@ -53,7 +53,33 @@
       <div id="piechart"></div>
     </div>
     <div id="heatmap"></div>
-    <div id="radarchart"></div>
+    <div id="radarchartContent">
+      <label for="radarStartInput">Start Hour</label>
+      <input
+        type="number"
+        name="radarStartInput"
+        id="radarStartInput"
+        min="1"
+        max="24"
+      />
+      <label for="radarEndInput">End Hour</label>
+      <input
+        type="number"
+        name="radarEndInput"
+        id="radarEndInput"
+        min="1"
+        max="24"
+      />
+      <button id="radarFilterBtn">Filter</button>
+      <button id="clearRadarFilterBtn">Clear</button>
+      <p id="radarError" style="color: red; display: none">
+        Error: start hour must be less or equal to end hour.
+      </p>
+      <p id="radarEmptyError" style="color: red; display: none">
+        Error: must select both a start and end hour.
+      </p>
+      <div id="radarchart"></div>
+    </div>
 
     <script src="js/d3.v6.min.js"></script>
     <script src="js/leaflet.js"></script>
