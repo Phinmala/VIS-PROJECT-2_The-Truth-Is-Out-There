@@ -4,11 +4,10 @@ class LeafletMap {
    * @param {Object}
    * @param {Array}
    */
-  constructor(_config, _data) {
+  constructor(_config) {
     this.config = {
       parentElement: _config.parentElement,
     };
-    this.data = _data;
 
     this.colorAttribute = "default";
     this.colorSchemes = {
@@ -131,239 +130,12 @@ class LeafletMap {
       vis.updateVis();
     });
 
-    //these are the city locations, displayed as a set of dots
-    vis.Dots = vis.svg
-      .selectAll("circle")
-      .data(vis.data)
-      .join("circle")
-      .attr("fill", "steelblue") // Initial color of sightings
-      .attr("stroke", "black")
-      //Leaflet has to take control of projecting points. Here we are feeding the latitude and longitude coordinates to
-      //leaflet so that it can project them on the coordinates of the view. Notice, we have to reverse lat and lon.
-      //Finally, the returned conversion produces an x and y point. We have to select the the desired one using .x or .y
-      .attr(
-        "cx",
-        (d) => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).x
-      )
-      .attr(
-        "cy",
-        (d) => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).y
-      )
-      .attr("r", 3)
-      .on("mouseover", function (event, d) {
-        // Function to add mouseover event
-        d3.select(this)
-          .transition() // D3 selects the object we have moused over to perform operations on it
-          .duration("150") // How long we are transitioning between the two states (works like keyframes)
-          .attr("r", 10); // Change radius
-
-        tooltip.style("visibility", "visible").html(`
-          <div class="tooltip-content">
-          <div class="tooltip-title">${
-            d.city_area
-          }${d.state !== "NA" ? ", " + d.state : ""}</div>
-            <div><b>Date/Time</b>: ${d.date_time}</div>
-            <div><b>Coordinates</b>: (${d.latitude}, ${d.longitude})</div>
-            <div><b>Shape</b>: ${d.ufo_shape}</div>
-            <div><b>Encounter time length</b>: ${
-              d.described_encounter_length
-            } (${d.encounter_length} seconds)</div>
-            <div><b>Description</b>: ${d.description}</div>
-          </div>`);
-      })
-      .on("mousemove", (event) => {
-        // Position the tooltip
-        tooltip
-          .style("top", event.pageY - 10 + "px")
-          .style("left", event.pageX + 10 + "px");
-      })
-      .on("mouseleave", function () {
-        // Function to add mouseover event
-        d3.select(this)
-          .transition() // D3 selects the object we have moused over to perform operations on it
-          .duration("150") // How long we are transitioning between the two states (works like keyframes)
-          .attr("fill", (d) => {
-            // This part is used to ensure that the color stays the same after hovering and does not default back to steelblue
-            if (vis.colorAttribute === "timeOfDay") {
-              const hour = new Date(d.date_time).getHours();
-              if ((hour >= 20 && hour < 24) || (hour >= 0 && hour < 6))
-                return "navy"; // Night
-              else if (hour >= 6 && hour < 12) return "yellow"; // Morning
-              else if (hour >= 12 && hour < 16) return "orange"; // Afternoon
-              else if (hour >= 16 && hour < 20) return "red"; // Evening
-            } else if (vis.colorAttribute === "year") {
-              const colorScale = d3
-                .scaleOrdinal()
-                .domain([
-                  "1900s",
-                  "1910s",
-                  "1920s",
-                  "1930s",
-                  "1940s",
-                  "1950s",
-                  "1960s",
-                  "1970s",
-                  "1980s",
-                  "1990s",
-                  "2000s",
-                  "2010s",
-                ])
-                .range([
-                  "#9a649c",
-                  "#8f5f98",
-                  "#845993",
-                  "#79448e",
-                  "#6f3f8a",
-                  "#643a85",
-                  "#59357f",
-                  "#4e307a",
-                  "#432b75",
-                  "#38266f",
-                  "#2d216a",
-                  "#4a024d",
-                ]);
-              const year = new Date(d.date_time).getFullYear();
-              const decade = Math.floor(year / 10) * 10;
-              return colorScale(decade + "s");
-            } else if (vis.colorAttribute === "month") {
-              const colorScale = d3
-                .scaleOrdinal()
-                .domain([
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
-                ])
-                .range([
-                  "red",
-                  "orange",
-                  "yellow",
-                  "green",
-                  "blue",
-                  "indigo",
-                  "violet",
-                  "purple",
-                  "pink",
-                  "brown",
-                  "grey",
-                  "white",
-                ]);
-              const month = new Date(d.date_time).getMonth();
-              return colorScale(
-                [
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
-                ][month]
-              );
-            } else if (vis.colorAttribute === "ufoShape") {
-              const colorScale = d3
-                .scaleOrdinal()
-                .domain([
-                  "changing",
-                  "chevron",
-                  "cigar",
-                  "circle",
-                  "cone",
-                  "crescent",
-                  "cross",
-                  "cylinder",
-                  "delta",
-                  "diamond",
-                  "disk",
-                  "dome",
-                  "egg",
-                  "fireball",
-                  "flare",
-                  "flash",
-                  "formation",
-                  "hexagon",
-                  "light",
-                  "NA",
-                  "other",
-                  "oval",
-                  "pyramid",
-                  "rectangle",
-                  "round",
-                  "sphere",
-                  "teardrop",
-                  "triangle",
-                  "unknown",
-                  "(blank)",
-                ])
-                .range([
-                  "red",
-                  "blue",
-                  "aqua",
-                  "green",
-                  "yellow",
-                  "purple",
-                  "orange",
-                  "pink",
-                  "turquoise",
-                  "lavender",
-                  "cyan",
-                  "magenta",
-                  "lime",
-                  "teal",
-                  "maroon",
-                  "olive",
-                  "navy",
-                  "indigo",
-                  "coral",
-                  "slate",
-                  "violet",
-                  "salmon",
-                  "tan",
-                  "skyblue",
-                  "mintcream",
-                  "peachpuff",
-                  "rosybrown",
-                  "indianred",
-                  "gold",
-                  "ivory",
-                ]);
-              return colorScale(d.ufo_shape);
-            } else if (vis.colorAttribute === "default") {
-              return "steelblue";
-            } else {
-              return vis.colorSchemes.default;
-            }
-          })
-          .attr("r", 3); // Change radius
-
-        tooltip.style("visibility", "hidden"); // Turn off the tooltip
-      })
-
-      .on("click", (event, d) => {
-        //experimental feature I was trying- click on point and then fly to it
-        // vis.newZoom = vis.theMap.getZoom()+2;
-        // if( vis.newZoom > 18)
-        //  vis.newZoom = 18;
-        // vis.theMap.flyTo([d.latitude, d.longitude], vis.newZoom);
-      });
-
     //handler here for updating the map, as you zoom in and out
     vis.theMap.on("zoomend", function () {
       vis.updateVis();
     });
+
+    vis.updateVis();
   }
 
   changeMapBackground(background) {
@@ -417,7 +189,28 @@ class LeafletMap {
   updateVis() {
     let vis = this;
 
-    vis.Dots
+    // TODO: for some reason when the map is zoomed or the color scheme changes, filteredSightings changes to []
+    // I have absolutely no idea why this is happening, as it doesn't happen any other time the map or data changes
+    // It's causing all of the points to show on the map instead of just the filtered ones -- Emma
+    console.log(filteredSightings);
+
+    // Only include brushed data, if applicable
+    // Otherwise, include everything in allData
+    vis.data = allData.filter(
+      (d) =>
+        filteredSightings.length == 0 ||
+        (filteredSightings.length != 0 &&
+          filteredSightings.find(
+            (filteredSighting) => filteredSighting == d.id
+          ))
+    );
+
+    //these are the city locations, displayed as a set of dots
+    vis.Dots = vis.svg
+      .selectAll("circle.mapPoint")
+      .data(vis.data)
+      .join("circle")
+      .attr("class", "mapPoint")
       // Hide the dots that aren't selected, if any visualization was brushed
       .style("display", (d) =>
         filteredSightings.length == 0 ||
@@ -425,184 +218,62 @@ class LeafletMap {
           ? "inline"
           : "none"
       )
-      .attr("fill", (d) => {
-        if (vis.colorAttribute !== "default") {
-          // Sets the color scale based on dropdown value selected
-          let colorScale;
-          switch (vis.colorAttribute) {
-            case "default":
-              return "steelblue";
-            case "year":
-              colorScale = d3
-                .scaleOrdinal()
-                .domain([
-                  "1900s",
-                  "1910s",
-                  "1920s",
-                  "1930s",
-                  "1940s",
-                  "1950s",
-                  "1960s",
-                  "1970s",
-                  "1980s",
-                  "1990s",
-                  "2000s",
-                  "2010s",
-                ])
-                .range([
-                  "#9a649c",
-                  "#8f5f98",
-                  "#845993",
-                  "#79448e",
-                  "#6f3f8a",
-                  "#643a85",
-                  "#59357f",
-                  "#4e307a",
-                  "#432b75",
-                  "#38266f",
-                  "#2d216a",
-                  "#4a024d",
-                ]);
+      .attr("fill", (d) => vis.determineFill(d))
+      .attr("stroke", "black")
+      //Leaflet has to take control of projecting points. Here we are feeding the latitude and longitude coordinates to
+      //leaflet so that it can project them on the coordinates of the view. Notice, we have to reverse lat and lon.
+      //Finally, the returned conversion produces an x and y point. We have to select the the desired one using .x or .y
+      .attr(
+        "cx",
+        (d) => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).x
+      )
+      .attr(
+        "cy",
+        (d) => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).y
+      )
+      .attr("r", 3)
+      .on("mouseover", function (event, d) {
+        // Function to add mouseover event
+        d3.select(this)
+          .transition() // D3 selects the object we have moused over to perform operations on it
+          .duration("150") // How long we are transitioning between the two states (works like keyframes)
+          .attr("r", 10); // Change radius
 
-              const year = new Date(d.date_time).getFullYear();
-              const decade = Math.floor(year / 10) * 10;
-              return colorScale(decade + "s");
+        tooltip.style("visibility", "visible").html(`
+          <div class="tooltip-content">
+          <div class="tooltip-title">${
+            d.city_area
+          }${d.state !== "NA" ? ", " + d.state : ""}</div>
+            <div><b>Date/Time</b>: ${d.date_time}</div>
+            <div><b>Coordinates</b>: (${d.latitude}, ${d.longitude})</div>
+            <div><b>Shape</b>: ${d.ufo_shape}</div>
+            <div><b>Encounter time length</b>: ${
+              d.described_encounter_length
+            } (${d.encounter_length} seconds)</div>
+            <div><b>Description</b>: ${d.description}</div>
+          </div>`);
+      })
+      .on("mousemove", (event) => {
+        // Position the tooltip
+        tooltip
+          .style("top", event.pageY - 10 + "px")
+          .style("left", event.pageX + 10 + "px");
+      })
+      .on("mouseleave", function () {
+        // Function to add mouseover event
+        d3.select(this)
+          .transition() // D3 selects the object we have moused over to perform operations on it
+          .duration("150") // How long we are transitioning between the two states (works like keyframes)
+          .attr("r", 3); // Change radius
 
-            case "month":
-              colorScale = d3
-                .scaleOrdinal()
-                .domain([
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
-                ])
-                .range([
-                  "red",
-                  "orange",
-                  "yellow",
-                  "green",
-                  "blue",
-                  "indigo",
-                  "violet",
-                  "purple",
-                  "pink",
-                  "brown",
-                  "grey",
-                  "white",
-                ]);
-              const month = new Date(d.date_time).getMonth();
-              return colorScale(
-                [
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
-                ][month]
-              );
-
-            case "timeOfDay":
-              colorScale = d3
-                .scaleOrdinal()
-                .domain(["morning", "afternoon", "evening", "night"])
-                .range(["yellow", "orange", "red", "navy"]);
-              const hour = new Date(d.date_time).getHours();
-              if ((hour >= 20 && hour < 24) || (hour >= 0 && hour < 6))
-                return colorScale("night");
-              else if (hour >= 6 && hour < 12) return colorScale("morning");
-              else if (hour >= 12 && hour < 16) return colorScale("afternoon");
-              else if (hour >= 16 && hour < 20) return colorScale("evening");
-              else return "steelblue";
-            case "ufoShape":
-              colorScale = d3
-                .scaleOrdinal()
-                .domain([
-                  "changing",
-                  "chevron",
-                  "cigar",
-                  "circle",
-                  "cone",
-                  "crescent",
-                  "cross",
-                  "cylinder",
-                  "delta",
-                  "diamond",
-                  "disk",
-                  "dome",
-                  "egg",
-                  "fireball",
-                  "flare",
-                  "flash",
-                  "formation",
-                  "hexagon",
-                  "light",
-                  "NA",
-                  "other",
-                  "oval",
-                  "pyramid",
-                  "rectangle",
-                  "round",
-                  "sphere",
-                  "teardrop",
-                  "triangle",
-                  "unknown",
-                  "(blank)",
-                ])
-                .range([
-                  "red",
-                  "blue",
-                  "aqua",
-                  "green",
-                  "yellow",
-                  "purple",
-                  "orange",
-                  "pink",
-                  "turquoise",
-                  "lavender",
-                  "cyan",
-                  "magenta",
-                  "lime",
-                  "teal",
-                  "maroon",
-                  "olive",
-                  "navy",
-                  "indigo",
-                  "coral",
-                  "slate",
-                  "violet",
-                  "salmon",
-                  "tan",
-                  "skyblue",
-                  "mintcream",
-                  "peachpuff",
-                  "rosybrown",
-                  "indianred",
-                  "gold",
-                  "ivory",
-                ]);
-              return colorScale(d.ufo_shape);
-            default:
-              return vis.colorSchemes.default;
-          }
-        } else {
-          return vis.colorSchemes.default;
-        }
+        tooltip.style("visibility", "hidden"); // Turn off the tooltip
+      })
+      .on("click", (event, d) => {
+        //experimental feature I was trying- click on point and then fly to it
+        // vis.newZoom = vis.theMap.getZoom()+2;
+        // if( vis.newZoom > 18)
+        //  vis.newZoom = 18;
+        // vis.theMap.flyTo([d.latitude, d.longitude], vis.newZoom);
       });
 
     //want to see how zoomed in you are?
@@ -627,5 +298,187 @@ class LeafletMap {
         (d) => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).y
       )
       .attr("r", vis.radiusSize);
+  }
+
+  determineFill(d) {
+    const vis = this;
+
+    if (vis.colorAttribute !== "default") {
+      // Sets the color scale based on dropdown value selected
+      let colorScale;
+      switch (vis.colorAttribute) {
+        case "default":
+          return "steelblue";
+        case "year":
+          colorScale = d3
+            .scaleOrdinal()
+            .domain([
+              "1900s",
+              "1910s",
+              "1920s",
+              "1930s",
+              "1940s",
+              "1950s",
+              "1960s",
+              "1970s",
+              "1980s",
+              "1990s",
+              "2000s",
+              "2010s",
+            ])
+            .range([
+              "#9a649c",
+              "#8f5f98",
+              "#845993",
+              "#79448e",
+              "#6f3f8a",
+              "#643a85",
+              "#59357f",
+              "#4e307a",
+              "#432b75",
+              "#38266f",
+              "#2d216a",
+              "#4a024d",
+            ]);
+
+          const year = new Date(d.date_time).getFullYear();
+          const decade = Math.floor(year / 10) * 10;
+          return colorScale(decade + "s");
+
+        case "month":
+          colorScale = d3
+            .scaleOrdinal()
+            .domain([
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun",
+              "Jul",
+              "Aug",
+              "Sep",
+              "Oct",
+              "Nov",
+              "Dec",
+            ])
+            .range([
+              "red",
+              "orange",
+              "yellow",
+              "green",
+              "blue",
+              "indigo",
+              "violet",
+              "purple",
+              "pink",
+              "brown",
+              "grey",
+              "white",
+            ]);
+          const month = new Date(d.date_time).getMonth();
+          return colorScale(
+            [
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun",
+              "Jul",
+              "Aug",
+              "Sep",
+              "Oct",
+              "Nov",
+              "Dec",
+            ][month]
+          );
+
+        case "timeOfDay":
+          colorScale = d3
+            .scaleOrdinal()
+            .domain(["morning", "afternoon", "evening", "night"])
+            .range(["yellow", "orange", "red", "navy"]);
+          const hour = new Date(d.date_time).getHours();
+          if ((hour >= 20 && hour < 24) || (hour >= 0 && hour < 6))
+            return colorScale("night");
+          else if (hour >= 6 && hour < 12) return colorScale("morning");
+          else if (hour >= 12 && hour < 16) return colorScale("afternoon");
+          else if (hour >= 16 && hour < 20) return colorScale("evening");
+          else return "steelblue";
+        case "ufoShape":
+          colorScale = d3
+            .scaleOrdinal()
+            .domain([
+              "changing",
+              "chevron",
+              "cigar",
+              "circle",
+              "cone",
+              "crescent",
+              "cross",
+              "cylinder",
+              "delta",
+              "diamond",
+              "disk",
+              "dome",
+              "egg",
+              "fireball",
+              "flare",
+              "flash",
+              "formation",
+              "hexagon",
+              "light",
+              "NA",
+              "other",
+              "oval",
+              "pyramid",
+              "rectangle",
+              "round",
+              "sphere",
+              "teardrop",
+              "triangle",
+              "unknown",
+              "(blank)",
+            ])
+            .range([
+              "red",
+              "blue",
+              "aqua",
+              "green",
+              "yellow",
+              "purple",
+              "orange",
+              "pink",
+              "turquoise",
+              "lavender",
+              "cyan",
+              "magenta",
+              "lime",
+              "teal",
+              "maroon",
+              "olive",
+              "navy",
+              "indigo",
+              "coral",
+              "slate",
+              "violet",
+              "salmon",
+              "tan",
+              "skyblue",
+              "mintcream",
+              "peachpuff",
+              "rosybrown",
+              "indianred",
+              "gold",
+              "ivory",
+            ]);
+          return colorScale(d.ufo_shape);
+        default:
+          return vis.colorSchemes.default;
+      }
+    } else {
+      return vis.colorSchemes.default;
+    }
   }
 }
