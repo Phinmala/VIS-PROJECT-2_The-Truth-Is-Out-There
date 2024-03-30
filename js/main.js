@@ -5,7 +5,7 @@
 let allData,
   filteredSightings = [];
 let leafletMap, timeline, barchart, piechart, heatMap, radarChart;
-let removeUFOShapeSelection, removeRadarSelection;
+let removeUFOShapeSelection, removeRadarSelection, removeSearchQuery;
 
 // Create the tooltip for easy access from the map and timeline
 const tooltip = d3
@@ -56,6 +56,8 @@ d3.csv("data/ufo_sightings.csv")
       if (currentVis != piechart) removeUFOShapeSelection();
       // Clear the radar chart select if that's not what was just brushed
       if (currentVis != radarChart) removeRadarSelection();
+      // Clear the search input if that's not what was changed
+      if (currentVis != "interactiveSearch") removeSearchQuery();
       // Keep the brush if the currentVis is the heatmap
       if (currentVis != heatMap) heatMap.brushG.call(heatMap.brush.move, null);
       // TODO: add logic here to only remove the map brush if it's not the one that was just created
@@ -69,6 +71,36 @@ d3.csv("data/ufo_sightings.csv")
     piechart = new PieChart({ parentElement: "#piechart" });
     heatMap = new HeatmapChart({ parentElement: "#heatmap" });
     radarChart = new RadarChart({ parentElement: "#radarchart" });
+
+    // Interactive search logic...
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchBtn");
+    const searchClearButton = document.getElementById("searchClearBtn");
+    searchButton.onclick = () => {
+      const searchValue = searchInput.value;
+      if (searchValue != "") {
+        filteredSightings = allData
+          .filter((sighting) =>
+            sighting.description
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
+          )
+          .map((sighting) => sighting.id);
+
+        // Update all visualizations
+        updateVisualizations("interactiveSearch");
+      }
+    };
+
+    removeSearchQuery = () => {
+      searchInput.value = "";
+    };
+
+    searchClearButton.onclick = () => {
+      removeSearchQuery();
+      filteredSightings = [];
+      updateVisualizations("interactiveSearch");
+    };
 
     // Pie chart selection logic...
     // Filter by UFO shape when any are selected in the dropdown
