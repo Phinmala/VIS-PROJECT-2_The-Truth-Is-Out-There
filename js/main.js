@@ -5,7 +5,7 @@
 let allData,
   filteredSightings = [];
 let leafletMap, timeline, barchart, piechart, heatMap, radarChart;
-let removeUFOShapeSelection;
+let removeUFOShapeSelection, removeRadarSelection;
 
 // Create the tooltip for easy access from the map and timeline
 const tooltip = d3
@@ -48,12 +48,14 @@ d3.csv("data/ufo_sightings.csv")
       piechart.updateVis();
       heatMap.updateVis();
       radarChart.updateVis();
-      
+
       // Remove the brushes from the visualizations
       timeline.brushG.call(timeline.brush.move, null);
       barchart.brushG.call(barchart.brush.move, null);
-      // Clear the shape selection if that's not what was just updated
+      // Clear the shape selection if that's not what was just brushed
       if (currentVis != piechart) removeUFOShapeSelection();
+      // Clear the radar chart select if that's not what was just brushed
+      if (currentVis != radarChart) removeRadarSelection();
       // Keep the brush if the currentVis is the heatmap
       if (currentVis != heatMap) heatMap.brushG.call(heatMap.brush.move, null);
       // TODO: add logic here to only remove the map brush if it's not the one that was just created
@@ -68,6 +70,7 @@ d3.csv("data/ufo_sightings.csv")
     heatMap = new HeatmapChart({ parentElement: "#heatmap" });
     radarChart = new RadarChart({ parentElement: "#radarchart" });
 
+    // Pie chart selection logic...
     // Filter by UFO shape when any are selected in the dropdown
     // Get the HTML elements from the DOM
     const shapeSelect = document.getElementById("UFOShapes");
@@ -101,6 +104,69 @@ d3.csv("data/ufo_sightings.csv")
       removeUFOShapeSelection();
       filteredSightings = [];
       updateVisualizations(piechart);
+    };
+
+    // Radar selection logic...
+    const radarStartInput = document.getElementById("radarStartInput");
+    const radarEndInput = document.getElementById("radarEndInput");
+    const radarFilterButton = document.getElementById("radarFilterBtn");
+    const radarClearButton = document.getElementById("clearRadarFilterBtn");
+    const radarError = document.getElementById("radarError");
+    const radarEmptyError = document.getElementById("radarEmptyError");
+    radarFilterButton.onclick = () => {
+      // Determine which values were selected
+      let selectedStart = radarStartInput.value;
+      let selectedEnd = radarEndInput.value;
+
+      // Only proceed if the start and end times were chosen
+      if (selectedStart != "" && selectedEnd != "") {
+        console.log(selectedStart, selectedEnd);
+        // Hide the error message
+        radarEmptyError.style.display = "none";
+
+        // Convert the selections to integers
+        selectedStart = +selectedStart;
+        selectedEnd = +selectedEnd;
+
+        if (selectedStart > selectedEnd) {
+          // Show the error message
+          radarError.style.display = "inline";
+        } else {
+          // Hide the error message
+          radarError.style.display = "none";
+          // Filter the sightings by those that are within the times
+          filteredSightings = allData
+            .filter((sighting) => {
+              let sightingHour = sighting.date_time.getHours();
+              if (sightingHour == 0) sightingHour = 24;
+              return (
+                sightingHour >= selectedStart && sightingHour <= selectedEnd
+              );
+            })
+            .map((sighting) => sighting.id);
+
+          // Update all visualizations to only show the selected times
+          updateVisualizations(radarChart);
+        }
+      } else {
+        // Show the error message
+        radarEmptyError.style.display = "inline";
+      }
+    };
+
+    removeRadarSelection = () => {
+      radarStartInput.value = "";
+      radarEndInput.value = "";
+    };
+
+    radarClearButton.onclick = () => {
+      // Hide the error messages
+      radarError.style.display = "none";
+      radarEmptyError.style.display = "none";
+
+      removeRadarSelection();
+      filteredSightings = [];
+      updateVisualizations(radarChart);
     };
   })
   .catch((error) => console.error(error));
