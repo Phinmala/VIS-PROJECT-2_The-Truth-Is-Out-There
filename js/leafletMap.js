@@ -135,37 +135,14 @@ class LeafletMap {
     vis.theMap.on("zoomend", function () {
       vis.updateVis();
     });
+
+    vis.brushG = vis.svg.append("g").attr("class", "brush");
+
     vis.brush = d3.brush()
-    .extent([[0, 0], [vis.theMap.getSize().x, vis.theMap.getSize().y]])
-    .on("start", () => (filteredSightings = [])) 
-    .on("end", (event) => vis.filterBySelection(event, vis)); 
+      .extent([[0, 0], [vis.theMap.getSize().x, vis.theMap.getSize().y]])
+      .on("start", () => (filteredSightings = [])) 
+      .on("end", (event) => vis.filterBySelection(event, vis)); 
 
-
-  //   function brushed(event) {
-  //     let selection = event.selection;
-  //     let bounds = L.latLngBounds(
-  //       vis.theMap.layerPointToLatLng([selection[0][0], selection[0][1]]),
-  //       vis.theMap.layerPointToLatLng([selection[1][0], selection[1][1]])
-  //     );
-  //   vis.data = allData;
-  //     // Filter data based on the brush selection
-  //     vis.filteredData = vis.data.filter(d => bounds.contains([d.latitude, d.longitude]));
-    
-  //     // Update the visualization with the filtered data
-  //     vis.Dots = vis.svg.selectAll('circle')
-  //       .attr("stroke", d => bounds.contains([d.latitude, d.longitude]) ? "white" : "black");
-  //   }
-
-  //   function brushEnd(event){
-  //     let selection = event.selection;
-  //     let bounds = L.latLngBounds(
-  //       vis.theMap.layerPointToLatLng([selection[0][0], selection[0][1]]),
-  //       vis.theMap.layerPointToLatLng([selection[1][0], selection[1][1]])
-  //     );
-  //     vis.Dots = vis.svg.selectAll('circle')
-  //       .attr("stroke", d => bounds.contains([d.latitude, d.longitude]) ? "white" : "black");
-          
-  //   }
     vis.updateVis(vis.brushEnabled);
   }
 
@@ -331,41 +308,39 @@ class LeafletMap {
       .attr("r", vis.radiusSize);
 
       if (brushEnabled === true) {
-        d3.selectAll(".brush").remove();
         vis.theMap.dragging.disable();
+        vis.svg.select(".brush").remove();
         vis.svg.append("g")
-          .attr("class", "brush")
-          .call(vis.brush);
+            .attr("class", "brush")
+            .call(vis.brush);
         vis.brushEnabled = true;
-      } else if (brushEnabled === false){
+    } else if (brushEnabled === false){
         vis.theMap.dragging.enable();
-        d3.selectAll(".brush").remove();
+        vis.svg.select(".brush").remove(); 
         vis.brushEnabled = false;
-        // if (vis.filteredData != null && vis.filteredData.length > 0) {
-
-        // }
-      }
+    }
+      vis.brushG.call(vis.brush);
   }
 
   filterBySelection = function(event, vis) {
     if (!event.selection)  return;
-      const extent = event.selection;
+    const extent = event.selection;
         // If there's no selection, reset the visualization to show all sightings
-        if (!extent) {
-          // Reset the filter (include them all)
-          filteredSightings = [];
-        } else {
-        let selection = event.selection;
-        let bounds = L.latLngBounds(
-            vis.theMap.layerPointToLatLng([selection[0][0], selection[0][1]]),
-            vis.theMap.layerPointToLatLng([selection[1][0], selection[1][1]])
-        );
+    if (!extent) {
+      // Reset the filter (include them all)
+      filteredSightings = [];
+    } else {
+    let selection = event.selection;
+    let bounds = L.latLngBounds(
+        vis.theMap.layerPointToLatLng([extent[0][0], extent[0][1]]),
+        vis.theMap.layerPointToLatLng([extent[1][0], extent[1][1]])
+    );
 
-        // Filter sightings within the bounds
-        filteredSightings = allData.filter(d =>
-            bounds.contains([d.latitude, d.longitude])
-        ).map(d => d.id);
-    }
+    // Filter sightings within the bounds
+    filteredSightings = allData.filter(d =>
+        bounds.contains([d.latitude, d.longitude])
+    ).map(d => d.id);
+}
 
     // After filtering, update all visualizations accordingly
     updateVisualizations(vis);

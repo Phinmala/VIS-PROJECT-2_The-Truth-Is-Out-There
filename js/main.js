@@ -45,10 +45,13 @@ d3.csv("data/ufo_sightings.csv")
       if (brushEnabled === false){
         leafletMap.updateVis(true);
         brushEnabled = true;
+        d3.select(this).style('background-color', 'green');
       } else if (brushEnabled === true) {
         leafletMap.updateVis(false);
         brushEnabled = false;
-        updateVisualizations(leafletMap)
+        d3.select(this).style('background-color', 'red');
+        updateVisualizations(leafletMap);
+
       }
     })
 
@@ -74,7 +77,7 @@ d3.csv("data/ufo_sightings.csv")
       // Keep the brush if the currentVis is the heatmap
       if (currentVis != heatMap) heatMap.brushG.call(heatMap.brush.move, null);
       // TODO: add logic here to only remove the map brush if it's not the one that was just created
-      leafletMap.brush.call(leafletMap.brush.move, null);
+      leafletMap.brushG.call(leafletMap.brush.move, null);
     };
 
     // Create the visualizations
