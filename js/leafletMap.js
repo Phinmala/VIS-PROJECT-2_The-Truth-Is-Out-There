@@ -10,16 +10,48 @@ class LeafletMap {
     };
 
     this.colorAttribute = "default";
+    
     this.colorSchemes = {
-      // Define color schemes for different attributes
-      year: d3.scaleLinear(d3.interpolateTurbo).domain([1949, 2013]),
-      month: d3.scaleOrdinal(d3.schemeCategory10),
-      timeOfDay: d3
-        .scaleOrdinal()
-        .domain(["morning", "afternoon", "evening", "night"])
-        .range(["yellow", "orange", "red", "navy"]),
-      ufoShape: d3.scaleOrdinal(d3.schemeSet3),
-      default: "steelblue",
+        // Define color schemes for different attributes
+        year: d3.scaleOrdinal()
+          .domain([
+            "1900s", "1910s", "1920s", "1930s", "1940s", "1950s", 
+            "1960s", "1970s", "1980s", "1990s", "2000s", "2010s"
+          ])
+          .range([
+            "#ffffff", "#f3f0fb", "#e7e1f7", "#dbd3f3", "#d0c4ef", "#c4b6ec",
+            "#b8a7e8", "#ad98e4", "#a18ae0", "#957bdc", "#8a6dd9", "#6e57ad"
+          ]),
+        month: d3.scaleOrdinal()
+          .domain([
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+          ])
+          .range([
+            "#ff0000", "#e6194b", "#f36b0c", "#cf8530", "#ffff2e", "#40bf50",
+            "#50afa5", "#0ec8f1", "#2c50d3", "#b024db", "#ee11e2", "#808080"
+          ]),
+        timeOfDay: d3.scaleOrdinal()
+          .domain(["morning", "afternoon", "evening", "night"])
+          .range(["#f95d6a", "#ffb700", "#a05195", "#003366"]),
+        ufoShape: d3.scaleOrdinal()
+          .domain([
+            "unknown", "other", "cylinder", "circle", "sphere", "disk", 
+            "oval", "cigar", "round", "dome", "crescent", "light", 
+            "fireball", "flash", "flare", "rectangle", "diamond", 
+            "cross", "hexagon", "chevron", "triangle", "delta", 
+            "cone", "pyramid", "formation", "changing", "egg", 
+            "teardrop", "changed"
+          ])
+          .range([
+            "#A9A9A9", "#6A6A6A", "#E1E3FF", "#B9BDFD", "#A1A7FF", 
+            "#8088FE", "#636DFF", "#4551FF", "#202DE0", "#030C92", 
+            "#010654", "#FFE286", "#FFD03F", "#FFC100", "#DBA601", 
+            "#8EFF72", "#31F401", "#26BF00", "#125401", "#FA7F7F", 
+            "#FF4747", "#FF0000", "#BD0000", "#7F0000", "#B87FFA", 
+            "#9B45FC", "#7800FF", "#6200D1", "#3B007E"
+          ]),
+        default: "steelblue",
     };
     this.brushEnabled = false;
 
@@ -126,10 +158,30 @@ class LeafletMap {
       .attr("value", (d) => d.value)
       .text((d) => d.label);
 
+      const legendContainer = d3.select(vis.config.parentElement)
+      .append("div")
+      .attr("id", "legend");
+  
+    // Append legend item
+    const legendItem = legendContainer.append("div")
+      .attr("class", "legend-item");
+  
+    // Append legend color box
+    legendItem.append("div")
+      .attr("class", "legend-color")
+      .style("background-color", "steelblue");
+  
+    // Append legend label
+    legendItem.append("div")
+      .attr("class", "legend-label")
+      .text("All Sightings");
+
     d3.select("#color-by-option").on("change", function () {
       vis.colorAttribute = this.value;
       vis.updateVis(brushEnabled);
+      vis.updateLegend();
     });
+
 
     vis.theMap.on("zoomend", function () {
       vis.updateVis();
@@ -525,4 +577,63 @@ class LeafletMap {
       return vis.colorSchemes.default;
     }
   } 
+
+  updateLegend() {
+    const vis = this;
+  
+    let legend = d3.select("#legend");
+  
+    if (legend.empty()) {
+      legend = d3.select(vis.config.parentElement)
+        .append("div")
+        .attr("id", "legend");
+    }
+  
+    const colorScale = vis.colorSchemes[vis.colorAttribute];
+
+    // The single color does not have a domain so do it separately from the others
+    if (vis.colorAttribute === "default") {
+      legend.selectAll(".legend-item").remove();
+      // Append single legend item for "Steelblue" color
+      const legendItem = legend.append("div")
+        .attr("class", "legend-item");
+  
+      legendItem.append("div")
+        .attr("class", "legend-color")
+        .style("background-color", "steelblue");
+  
+      legendItem.append("div")
+        .attr("class", "legend-label")
+        .text("All Sightings");
+
+       return;
+    }
+    const legendData = colorScale.domain();
+  
+    // Remove any existing legend items
+    legend.selectAll(".legend-item").remove();
+  
+    const legendItems = legend.selectAll(".legend-item")
+      .data(legendData)
+      .enter()
+      .append("div")
+      .attr("class", "legend-item");
+
+    legendItems.append("div")
+      .attr("class", "legend-color")
+      .style("background-color", d => colorScale(d));
+
+    legendItems.append("div")
+      .attr("class", "legend-label")
+      .text(d => d);
+
+  
+    // Prevents scrolling on the legend so the map does not zoom
+    legend.on("wheel", function(event) {
+      // Prevent the default scroll behavior
+      event.preventDefault();
+      event.stopPropagation();
+    });
+  }
+  
 }
