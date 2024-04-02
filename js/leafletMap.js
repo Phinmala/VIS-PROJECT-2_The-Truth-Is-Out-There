@@ -448,7 +448,7 @@ class LeafletMap {
           const hour = new Date(d.date_time).getHours();
           if ((hour >= 20 && hour < 24) || (hour >= 0 && hour < 5))
             return colorScale("night");
-          else if (hour >= 6 && hour < 12) return colorScale("morning");
+          else if (hour >= 5 && hour < 12) return colorScale("morning");
           else if (hour >= 12 && hour < 16) return colorScale("afternoon");
           else if (hour >= 16 && hour < 20) return colorScale("evening");
           else return "black";
