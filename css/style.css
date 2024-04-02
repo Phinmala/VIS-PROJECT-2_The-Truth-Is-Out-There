@@ -31,6 +31,19 @@ body {
   font-size: 10px;
 }
 
+.brushButton {
+  position: absolute;
+  top: 24px; 
+  right: 1px; 
+  padding: 5px;
+  background-color: red;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 10px;
+  cursor: pointer;
+  z-index: 10000000; 
+}
+
 .tooltip {
   position: absolute;
   background: #fff;
@@ -49,5 +62,37 @@ body {
   font-size: 14px;
   font-weight: 600;
 
+}
+
+#legend {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: white; 
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+  z-index: 1000000;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  margin-top: 10px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.legend-label {
+  white-space: nowrap;
 }
 

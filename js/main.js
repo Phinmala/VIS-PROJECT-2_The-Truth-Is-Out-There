@@ -6,6 +6,7 @@ let allData,
   filteredSightings = [];
 let leafletMap, timeline, barchart, piechart, heatMap, radarChart;
 let removeUFOShapeSelection, removeRadarSelection, removeSearchQuery;
+let brushEnabled = false;
 
 // Create the tooltip for easy access from the map and timeline
 const tooltip = d3
@@ -40,9 +41,24 @@ d3.csv("data/ufo_sightings.csv")
       `Unmapped sightings: ${noCoordinatesCount}`
     );
 
+    d3.selectAll("#toggle-brush-button").on('click', function() {
+      if (brushEnabled === false){
+        leafletMap.updateVis(true);
+        brushEnabled = true;
+        d3.select(this).style('background-color', 'green');
+      } else if (brushEnabled === true) {
+        leafletMap.updateVis(false);
+        brushEnabled = false;
+        d3.select(this).style('background-color', 'red');
+        updateVisualizations(leafletMap);
+
+      }
+    })
+
+
     updateVisualizations = (currentVis) => {
       // Update all of the visualizations' content
-      leafletMap.updateVis();
+      leafletMap.updateVis(brushEnabled);
       timeline.updateVis();
       barchart.updateVis();
       piechart.updateVis();
@@ -61,7 +77,7 @@ d3.csv("data/ufo_sightings.csv")
       // Keep the brush if the currentVis is the heatmap
       if (currentVis != heatMap) heatMap.brushG.call(heatMap.brush.move, null);
       // TODO: add logic here to only remove the map brush if it's not the one that was just created
-      // if (currentVis != leafletMap) {REMOVE THE BRUSH FROM THE MAP}
+      leafletMap.brushG.call(leafletMap.brush.move, null);
     };
 
     // Create the visualizations
