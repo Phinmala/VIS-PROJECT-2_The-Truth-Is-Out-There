@@ -131,7 +131,6 @@ class LeafletMap {
       vis.updateVis(brushEnabled);
     });
 
-    //handler here for updating the map, as you zoom in and out
     vis.theMap.on("zoomend", function () {
       vis.updateVis();
     });
@@ -373,19 +372,20 @@ class LeafletMap {
               "2010s",
             ])
             .range([
-              "#9a649c",
-              "#8f5f98",
-              "#845993",
-              "#79448e",
-              "#6f3f8a",
-              "#643a85",
-              "#59357f",
-              "#4e307a",
-              "#432b75",
-              "#38266f",
-              "#2d216a",
-              "#4a024d",
-            ]);
+              "#ffffff",
+              "#f3f0fb",
+              "#e7e1f7",
+              "#dbd3f3",
+              "#d0c4ef",
+              "#c4b6ec",
+              "#b8a7e8",
+              "#ad98e4",
+              "#a18ae0",
+              "#957bdc",
+              "#8a6dd9",
+              "#6e57ad"
+            ]
+            );
 
           const year = new Date(d.date_time).getFullYear();
           const decade = Math.floor(year / 10) * 10;
@@ -409,18 +409,18 @@ class LeafletMap {
               "Dec",
             ])
             .range([
-              "red",
-              "orange",
-              "yellow",
-              "green",
-              "blue",
-              "indigo",
-              "violet",
-              "purple",
-              "pink",
-              "brown",
-              "grey",
-              "white",
+              "#ff0000",
+              "#e6194b",
+              "#f36b0c",
+              "#cf8530",
+              "#ffff2e",
+              "#40bf50",
+              "#50afa5",
+              "#0ec8f1",
+              "#2c50d3",
+              "#b024db",
+              "#ee11e2",
+              "#808080",
             ]);
           const month = new Date(d.date_time).getMonth();
           return colorScale(
@@ -444,80 +444,78 @@ class LeafletMap {
           colorScale = d3
             .scaleOrdinal()
             .domain(["morning", "afternoon", "evening", "night"])
-            .range(["yellow", "orange", "red", "navy"]);
+            .range(["#f95d6a", "#ffb700", "#a05195", "#003366"]);
           const hour = new Date(d.date_time).getHours();
-          if ((hour >= 20 && hour < 24) || (hour >= 0 && hour < 6))
+          if ((hour >= 20 && hour < 24) || (hour >= 0 && hour < 5))
             return colorScale("night");
           else if (hour >= 6 && hour < 12) return colorScale("morning");
           else if (hour >= 12 && hour < 16) return colorScale("afternoon");
           else if (hour >= 16 && hour < 20) return colorScale("evening");
-          else return "steelblue";
+          else return "black";
         case "ufoShape":
           colorScale = d3
             .scaleOrdinal()
             .domain([
-              "changing",
-              "chevron",
-              "cigar",
-              "circle",
-              "cone",
-              "crescent",
-              "cross",
-              "cylinder",
-              "delta",
-              "diamond",
-              "disk",
-              "dome",
-              "egg",
-              "fireball",
-              "flare",
-              "flash",
-              "formation",
-              "hexagon",
-              "light",
-              "NA",
-              "other",
-              "oval",
-              "pyramid",
-              "rectangle",
-              "round",
-              "sphere",
-              "teardrop",
-              "triangle",
               "unknown",
-              "(blank)",
+              "other",
+              "cylinder",
+              "circle",
+              "sphere",
+              "disk",
+              "oval",
+              "cigar",
+              "round",
+              "dome",
+              "crescent",
+              "light",
+              "fireball",
+              "flash",
+              "flare",
+              "rectangle",
+              "diamond",
+              "cross",
+              "hexagon",
+              "chevron",
+              "triangle",
+              "delta",
+              "cone",
+              "pyramid",
+              "formation",
+              "changing",
+              "egg",
+              "teardrop",
+              "changed",
             ])
             .range([
-              "red",
-              "blue",
-              "aqua",
-              "green",
-              "yellow",
-              "purple",
-              "orange",
-              "pink",
-              "turquoise",
-              "lavender",
-              "cyan",
-              "magenta",
-              "lime",
-              "teal",
-              "maroon",
-              "olive",
-              "navy",
-              "indigo",
-              "coral",
-              "slate",
-              "violet",
-              "salmon",
-              "tan",
-              "skyblue",
-              "mintcream",
-              "peachpuff",
-              "rosybrown",
-              "indianred",
-              "gold",
-              "ivory",
+              "#A9A9A9",
+              "#6A6A6A",
+              "#E1E3FF",
+              "#B9BDFD",
+              "#A1A7FF",
+              "#8088FE",
+              "#636DFF",
+              "#4551FF",
+              "#202DE0",
+              "#030C92",
+              "#010654",
+              "#FFE286",
+              "#FFD03F",
+              "#FFC100",
+              "#DBA601",
+              "#8EFF72",
+              "#31F401",
+              "#26BF00",
+              "#125401",
+              "#FA7F7F",
+              "#FF4747",
+              "#FF0000",
+              "#BD0000",
+              "#7F0000",
+              "#B87FFA",
+              "#9B45FC",
+              "#7800FF",
+              "#6200D1",
+              "#3B007E",
             ]);
           return colorScale(d.ufo_shape);
         default:
@@ -526,5 +524,5 @@ class LeafletMap {
     } else {
       return vis.colorSchemes.default;
     }
-  }
+  } 
 }
