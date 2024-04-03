@@ -1,8 +1,9 @@
 # Project 2: The Truth Is Out There
-Dr. Jillian Aurisano - Engineering Interactive Visual Interfaces for Data Science (CS5124/6024)
-> This project was created with [D3.js](https://d3js.org/), [Leaflet.js](https://leafletjs.com/), JavaScript, HTML, and CSS.
+Dr. Jillian Aurisano - Engineering Interactive Visual Interfaces for Data Science (CS 5124/6024)
 
-Live code for this project is deployed at the following website [Insert Website Here]
+This project was created with [D3.js](https://d3js.org/), [Leaflet.js](https://leafletjs.com/), JavaScript, HTML, and CSS.
+
+Live code for this project is deployed at https://data-vis-project-2.netlify.app/.
 
 ## Project Members:
 - Molly Vongsakhamphouy
