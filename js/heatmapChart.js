@@ -2,12 +2,12 @@ class HeatmapChart {
   constructor(_config) {
     const defaultMargin = { top: 50, right: 0, bottom: 100, left: 100 };
     const margin = _config.margin || defaultMargin;
-    const scaleGrid = 0.5;
+    const scaleGrid = 1;
     this.config = {
       parentElement: _config.parentElement,
       margin: margin,
       scaleGrid: scaleGrid,
-      width: 960 - margin.left - margin.right * scaleGrid,
+      width: 500 - margin.left - margin.right * scaleGrid,
       cellSizePercentage: 0.95,
     };
 
@@ -236,7 +236,7 @@ class HeatmapChart {
       .append("text")
       .attr("class", "x axis-title")
       .attr("text-anchor", "middle")
-      .attr("x", vis.config.width / 4 - 10)
+      .attr("x", vis.config.width / 2 - 10)
       .attr("y", vis.height + vis.config.margin.bottom - 50)
       .text("Month");
 
@@ -250,7 +250,7 @@ class HeatmapChart {
     vis.svg
       .append("text")
       .attr("class", "chart-title")
-      .attr("x", vis.config.width / 4 - 10)
+      .attr("x", vis.config.width / 2 - 10)
       .attr("y", vis.height + vis.config.margin.bottom - 20)
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
