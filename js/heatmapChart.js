@@ -253,6 +253,7 @@ class HeatmapChart {
       .attr("x", vis.config.width / 4 - 10)
       .attr("y", vis.height + vis.config.margin.bottom - 20)
       .attr("text-anchor", "middle")
+      .style("font-size", "16px")
       .text("Decadal Distribution of UFO Sightings by Month");
 
     vis.brushG = vis.svg.append("g").attr("class", "brush");

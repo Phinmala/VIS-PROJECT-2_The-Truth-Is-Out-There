@@ -129,7 +129,7 @@ class RadarChart {
       .attr("y", 100 + vis.height / 2)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .style("font-size", "24px")
+      .style("font-size", "16px")
       .text("UFO Sightings Over 24 Hours");
 
     vis.hoverSvg = vis.svg.append("g").attr("class", "axisHoverWrapper");

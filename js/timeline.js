@@ -5,8 +5,8 @@ class Timeline {
       parentElement: _config.parentElement,
       // Change the container sizes after laying out all visualizations
       containerWidth: _config.containerWidth || 1000,
-      containerHeight: _config.containerHeight || 500,
-      margin: { top: 50, bottom: 50, right: 50, left: 80 },
+      containerHeight: _config.containerHeight || 200,
+      margin: { top: 50, bottom: 50, right: 20, left: 80 },
     };
 
     this.initVis();
