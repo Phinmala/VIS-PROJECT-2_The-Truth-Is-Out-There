@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
+    <!--
     <div id="interactiveSearch">
       <label for="searchInput"
         >Search for a term within the sightings' descriptions:</label
@@ -88,6 +89,110 @@
         Error: must select both a start and end hour.
       </p>
       <div id="radarchart"></div>
+    </div>-->
+
+    <div class="container">
+      <div class="title">
+        <h1>Project 2: The Truth is Out There</h1>
+      </div>
+      <div class="search">
+        <label for="searchInput">Search for a term within the sightings' descriptions:</label>
+        <input id="searchInput" name="searchInput" type="text" />
+        <button id="searchBtn" name="searchBtn">Search</button>
+        <button id="searchClearBtn" name="searchClearBtn">Clear</button>
+      </div>
+      <div class="map">
+        <div id="noCoordinatesCount" class="count"></div>
+        <button id="toggle-brush-button" class="brushButton">Toggle Map Brushing</button>
+        <div id="my-map"></div>
+      </div>
+      <div id="color-by-option"></div>
+      <div id="map-background"></div>
+      <div class="timeline">
+        <div id="timeline"></div>
+      </div>
+      <div class="pieTitle">
+        <h2>Frequency of UFO Shapes</h2>
+      </div>
+      <div class="histogramTitle">
+        <h2>Distribution of Encounters based on Length (seconds)</h2>
+      </div>
+      <div class="pie">
+        <div id="piechart"></div>
+      </div>
+      <div class="histogram">
+        <div id="barchart"></div>
+      </div>
+      <div class="pieOptions">
+        <p>* Hold ctrl or cmd when clicking to select multiple shapes.</p>
+        <select name="UFOShapes" id="UFOShapes" multiple>
+          <option value="changed">Changed</option>
+          <option value="changing">Changing</option>
+          <option value="chevron">Chevron</option>
+          <option value="cigar">Cigar</option>
+          <option value="circle">Circle</option>
+          <option value="cone">Cone</option>
+          <option value="crescent">Crescent</option>
+          <option value="cross">Cross</option>
+          <option value="cylinder">Cylinder</option>
+          <option value="delta">Delta</option>
+          <option value="diamond">Diamond</option>
+          <option value="disk">Disk</option>
+          <option value="dome">Dome</option>
+          <option value="egg">Egg</option>
+          <option value="fireball">Fireball</option>
+          <option value="flare">Flare</option>
+          <option value="flash">Flash</option>
+          <option value="formation">Formation</option>
+          <option value="hexagon">Hexagon</option>
+          <option value="light">Light</option>
+          <option value="other">Other</option>
+          <option value="oval">Oval</option>
+          <option value="pyramid">Pyramid</option>
+          <option value="round">round</option>
+          <option value="sphere">Sphere</option>
+          <option value="rectangle">Rectangle</option>
+          <option value="teardrop">Teardrop</option>
+          <option value="triangle">Triangle</option>
+          <option value="unknown">Unknown</option>
+        </select>
+        <button id="shapeFilterBtn">Filter</button>
+        <button id="clearShapeFilterBtn">Clear</button>
+      </div>
+      <div class="radarOptions">
+        <br></br><br></br>
+        <a>*Enter a start hour and end hour to filter by hours of the day<br></br></a>
+        <label for="radarStartInput">Start Hour</label>
+        <input
+          type="number"
+          name="radarStartInput"
+          id="radarStartInput"
+          min="1"
+          max="24"
+        />
+        <label for="radarEndInput">End Hour</label>
+        <input
+          type="number"
+          name="radarEndInput"
+          id="radarEndInput"
+          min="1"
+          max="24"
+        />
+        <button id="radarFilterBtn">Filter</button>
+        <button id="clearRadarFilterBtn">Clear</button>
+        <p id="radarError" style="color: red; display: none">
+          Error: start hour must be less or equal to end hour.
+        </p>
+        <p id="radarEmptyError" style="color: red; display: none">
+          Error: must select both a start and end hour.
+        </p>
+      </div>
+      <div class="radar">
+        <div id="radarchart"></div>
+      </div>
+      <div class="heat">
+        <div id="heatmap"></div>
+      </div>
     </div>
 
     <script src="js/d3.v6.min.js"></script>
