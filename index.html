@@ -96,14 +96,18 @@
         <h1>Project 2: The Truth is Out There</h1>
       </div>
       <div class="search">
-        <label for="searchInput">Search for a term within the sightings' descriptions:</label>
+        <label for="searchInput"
+          >Search for a term within the sightings' descriptions:</label
+        >
         <input id="searchInput" name="searchInput" type="text" />
         <button id="searchBtn" name="searchBtn">Search</button>
         <button id="searchClearBtn" name="searchClearBtn">Clear</button>
       </div>
-      <div class="map">
+      <div class="map" id="map-container">
         <div id="noCoordinatesCount" class="count"></div>
-        <button id="toggle-brush-button" class="brushButton">Toggle Map Brushing</button>
+        <button id="toggle-brush-button" class="brushButton">
+          Toggle Map Brushing
+        </button>
         <div id="my-map"></div>
       </div>
       <div id="color-by-option"></div>
@@ -160,8 +164,9 @@
         <button id="clearShapeFilterBtn">Clear</button>
       </div>
       <div class="radarOptions">
-        <br></br><br></br>
-        <a>*Enter a start hour and end hour to filter by hours of the day<br></br></a>
+        <p style="margin: 15px 0">
+          * Enter a start hour and end hour to filter by hours of the day.
+        </p>
         <label for="radarStartInput">Start Hour</label>
         <input
           type="number"
@@ -170,7 +175,7 @@
           min="1"
           max="24"
         />
-        <label for="radarEndInput">End Hour</label>
+        <label for="radarEndInput" style="margin-left: 10px">End Hour</label>
         <input
           type="number"
           name="radarEndInput"
@@ -178,7 +183,7 @@
           min="1"
           max="24"
         />
-        <button id="radarFilterBtn">Filter</button>
+        <button id="radarFilterBtn" style="margin-left: 10px">Filter</button>
         <button id="clearRadarFilterBtn">Clear</button>
         <p id="radarError" style="color: red; display: none">
           Error: start hour must be less or equal to end hour.

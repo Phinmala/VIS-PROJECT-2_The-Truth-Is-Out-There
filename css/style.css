@@ -6,25 +6,26 @@ body {
 
 #map-container {
   position: relative;
+  margin-top: 20px;
 }
 #my-map {
   width: 100%;
   height: 500px;
 }
 #map-background {
-    position: absolute; 
-    z-index: 10000000; 
-    right: 0;
+  position: absolute;
+  z-index: 10000000;
+  right: 0;
 }
 #color-by-option {
-  position: absolute; 
-  z-index: 10000000; 
+  position: absolute;
+  z-index: 10000000;
   left: 0;
 }
 .count {
   position: absolute;
-  top: -25px; 
-  right: 1px; 
+  top: -25px;
+  right: 1px;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 3px;
@@ -33,15 +34,15 @@ body {
 
 .brushButton {
   position: absolute;
-  top: 24px; 
-  right: 1px; 
+  top: 24px;
+  right: 1px;
   padding: 5px;
-  background-color: red;
+  background-color: #e7a7a7;
   border: 1px solid #ccc;
   border-radius: 3px;
   font-size: 10px;
   cursor: pointer;
-  z-index: 10000000; 
+  z-index: 10000000;
 }
 
 .tooltip {
@@ -61,17 +62,16 @@ body {
   color: #000;
   font-size: 14px;
   font-weight: 600;
-
 }
 
 #legend {
   position: absolute;
   bottom: 20px;
   left: 20px;
-  background-color: white; 
+  background-color: white;
   padding: 10px;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1000000;
   font-family: Arial, sans-serif;
   font-size: 12px;
@@ -107,9 +107,9 @@ h2 {
   font-weight: normal;
 }
 
-
-/* Layout formatting */ 
-.container {  display: grid;
+/* Layout formatting */
+.container {
+  display: grid;
   grid-template-columns: 600px 600px;
   grid-template-rows: 30px 510px 300px 30px 500px 100px 300px;
   gap: 10px 10px;
@@ -124,26 +124,50 @@ h2 {
     "heat radar";
 }
 
-.title { grid-area: title; }
+.title {
+  grid-area: title;
+}
 
-.search { grid-area: search; }
+.search {
+  grid-area: search;
+}
 
-.map { grid-area: map; }
+.map {
+  grid-area: map;
+}
 
-.timeline { grid-area: timeline; }
+.timeline {
+  grid-area: timeline;
+}
 
-.pieTitle { grid-area: pieTitle; }
+.pieTitle {
+  grid-area: pieTitle;
+}
 
-.histogramTitle { grid-area: histogramTitle; }
+.histogramTitle {
+  grid-area: histogramTitle;
+}
 
-.pie { grid-area: pie; }
+.pie {
+  grid-area: pie;
+}
 
-.histogram { grid-area: histogram; }
+.histogram {
+  grid-area: histogram;
+}
 
-.pieOptions { grid-area: pieOptions; }
+.pieOptions {
+  grid-area: pieOptions;
+}
 
-.radarOptions { grid-area: radarOptions; }
+.radarOptions {
+  grid-area: radarOptions;
+}
 
-.radar { grid-area: radar; }
+.radar {
+  grid-area: radar;
+}
 
-.heat { grid-area: heat; }
+.heat {
+  grid-area: heat;
+}

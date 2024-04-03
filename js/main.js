@@ -41,20 +41,18 @@ d3.csv("data/ufo_sightings.csv")
       `Unmapped sightings: ${noCoordinatesCount}`
     );
 
-    d3.selectAll("#toggle-brush-button").on('click', function() {
-      if (brushEnabled === false){
+    d3.selectAll("#toggle-brush-button").on("click", function () {
+      if (brushEnabled === false) {
         leafletMap.updateVis(true);
         brushEnabled = true;
-        d3.select(this).style('background-color', 'green');
+        d3.select(this).style("background-color", "#a7e7aa");
       } else if (brushEnabled === true) {
         leafletMap.updateVis(false);
         brushEnabled = false;
-        d3.select(this).style('background-color', 'red');
+        d3.select(this).style("background-color", "#e7a7a7");
         updateVisualizations(leafletMap);
-
       }
-    })
-
+    });
 
     updateVisualizations = (currentVis) => {
       // Update all of the visualizations' content
