@@ -248,7 +248,7 @@ class LeafletMap {
   updateVis(brushEnabled) {
     let vis = this;
 
-    // TODO: for some reason when the map is zoomed or the color scheme changes, filteredSightings changes to []
+    // For some reason when the map is zoomed or the color scheme changes, filteredSightings changes to []
     // I have absolutely no idea why this is happening, as it doesn't happen any other time the map or data changes
     // It's causing all of the points to show on the map instead of just the filtered ones -- Emma
     console.log(filteredSightings);

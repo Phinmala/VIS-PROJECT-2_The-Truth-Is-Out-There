@@ -122,16 +122,6 @@ class RadarChart {
       .attr("dominant-baseline", "central")
       .style("fill", "black");
 
-    vis.svg
-      .append("text")
-      .attr("class", "chart-title")
-      .attr("x", 0)
-      .attr("y", 100 + vis.height / 2)
-      .attr("text-anchor", "middle")
-      .attr("dominant-baseline", "middle")
-      .style("font-size", "24px")
-      .text("UFO Sightings Over 24 Hours");
-
     vis.hoverSvg = vis.svg.append("g").attr("class", "axisHoverWrapper");
     Array.from(Array(24).keys()).forEach((i) => {
       let angle = vis.getAngle(i);
