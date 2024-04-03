@@ -4,7 +4,7 @@ class PieChart {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 500,
       containerHeight: _config.containerHeight || 500,
-      margin: _config.margin || { top: 25, right: 25, bottom: 35, left: 55 },
+      margin: _config.margin || { top: 5, right: 25, bottom: 35, left: 55 },
     };
 
     this.initVis();

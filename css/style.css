@@ -111,17 +111,18 @@ h2 {
 .container {
   display: grid;
   grid-template-columns: 600px 600px;
-  grid-template-rows: 30px 510px 300px 30px 500px 100px 300px;
-  gap: 10px 10px;
+  grid-template-rows: 30px 510px 300px 30px 500px 30px 450px 100px;
+  gap: 30px 10px;
   grid-auto-flow: row;
   grid-template-areas:
     "title search"
     "map map"
     "timeline timeline"
-    "pieTitle histogramTitle"
-    "pie histogram"
-    "pieOptions radarOptions"
-    "heat radar";
+    "heatmapTitle histogramTitle"
+    "heat histogram"
+    "pieTitle radarTitle"
+    "pie radar"
+    "pieOptions radarOptions";
 }
 
 .title {
@@ -142,10 +143,12 @@ h2 {
 
 .pieTitle {
   grid-area: pieTitle;
+  margin-left: 170px;
 }
 
 .histogramTitle {
   grid-area: histogramTitle;
+  margin-left: 90px;
 }
 
 .pie {
@@ -158,10 +161,22 @@ h2 {
 
 .pieOptions {
   grid-area: pieOptions;
+  margin-left: 100px;
 }
 
 .radarOptions {
   grid-area: radarOptions;
+  margin-left: 70px;
+}
+
+.heatmapTitle {
+  grid-area: heatmapTitle;
+  margin-left: 120px;
+}
+
+.radarTitle {
+  grid-area: radarTitle;
+  margin-left: 140px;
 }
 
 .radar {

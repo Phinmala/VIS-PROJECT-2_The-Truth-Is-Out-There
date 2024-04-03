@@ -74,7 +74,7 @@ d3.csv("data/ufo_sightings.csv")
       if (currentVis != "interactiveSearch") removeSearchQuery();
       // Keep the brush if the currentVis is the heatmap
       if (currentVis != heatMap) heatMap.brushG.call(heatMap.brush.move, null);
-      // TODO: add logic here to only remove the map brush if it's not the one that was just created
+      // Only remove the map brush if it's not the one that was just created
       leafletMap.brushG.call(leafletMap.brush.move, null);
     };
 

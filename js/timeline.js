@@ -3,8 +3,7 @@ class Timeline {
   constructor(_config) {
     this.config = {
       parentElement: _config.parentElement,
-      // Change the container sizes after laying out all visualizations
-      containerWidth: _config.containerWidth || 1000,
+      containerWidth: _config.containerWidth || 1100,
       containerHeight: _config.containerHeight || 200,
       margin: { top: 50, bottom: 50, right: 20, left: 80 },
     };
